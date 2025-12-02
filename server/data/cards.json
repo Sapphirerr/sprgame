@@ -1,0 +1,105 @@
+[
+{"id":"001","character":"Miko of Song Miku","variant":1,"rarity":"Normal","vocal":18,"dance":15,"visual":12,"type":"happy","skill":"banana slip","group":"VS"},
+{"id":"002","character":"Miku in Another World","variant":2,"rarity":"Limit","vocal":6,"dance":20,"visual":16,"type":"love","skill":"never give up","group":"VS"},
+{"id":"003","character":"Miku the Lost","variant":3,"rarity":"Fes","vocal":16,"dance":10,"visual":19,"type":"hope","skill":"hidden skill","group":"VS"},
+
+{"id":"004","character":"Cyber Rin","variant":1,"rarity":"Normal","vocal":13,"dance":14,"visual":17,"type":"happy","skill":"banana slip","group":"VS"},
+{"id":"005","character":"Rin of the Night Melody","variant":2,"rarity":"Limit","vocal":19,"dance":8,"visual":16,"type":"love","skill":"makeup shop visit","group":"VS"},
+{"id":"006","character":"Little Angel Rin","variant":3,"rarity":"Fes","vocal":14,"dance":15,"visual":16,"type":"hope","skill":"salt","group":"VS"},
+
+{"id":"007","character":"Len Street Art","variant":1,"rarity":"Normal","vocal":11,"dance":19,"visual":15,"type":"happy","skill":"gacha god","group":"VS"},
+{"id":"008","character":"What did Len do on tree?","variant":2,"rarity":"Limit","vocal":17,"dance":9,"visual":16,"type":"love","skill":"golden microphone","group":"VS"},
+{"id":"009","character":"Deity Len","variant":3,"rarity":"Fes","vocal":18,"dance":6,"visual":20,"type":"hope","skill":"leek shield","group":"VS"},
+
+{"id":"010","character":"Graceful Dress Luka","variant":1,"rarity":"Normal","vocal":7,"dance":17,"visual":20,"type":"happy","skill":"makeup shop visit","group":"VS"},
+{"id":"011","character":"Luka of the Future","variant":2,"rarity":"Limit","vocal":15,"dance":18,"visual":12,"type":"love","skill":"feet of fire","group":"VS"},
+{"id":"012","character":"The misguided Luka","variant":3,"rarity":"Fes","vocal":20,"dance":5,"visual":20,"type":"hope","skill":"fate control","group":"VS"},
+
+{"id":"013","character":"Bunny Girl MEIKO","variant":1,"rarity":"Normal","vocal":9,"dance":19,"visual":15,"type":"happy","skill":"mic power cut","group":"VS"},
+{"id":"014","character":"Miko of Music MEIKO","variant":2,"rarity":"Limit","vocal":17,"dance":7,"visual":20,"type":"love","skill":"golden microphone","group":"VS"},
+{"id":"015","character":"Librarian of Library MEIKO","variant":3,"rarity":"Fes","vocal":18,"dance":12,"visual":15,"type":"hope","skill":"gacha god","group":"VS"},
+
+{"id":"016","character":"KING KAITO","variant":1,"rarity":"Normal","vocal":17,"dance":8,"visual":19,"type":"happy","skill":"freeze spell","group":"VS"},
+{"id":"017","character":"The Planner KAITO","variant":2,"rarity":"Limit","vocal":18,"dance":10,"visual":17,"type":"love","skill":"gacha god","group":"VS"},
+{"id":"018","character":"KAITO Basketball","variant":3,"rarity":"Fes","vocal":12,"dance":20,"visual":11,"type":"hope","skill":"feet of fire","group":"VS"},
+
+{"id":"019","character":"Captain Ichika","variant":1,"rarity":"Normal","vocal":20,"dance":20,"visual":5,"type":"happy","skill":"makeup shop visit","group":"LN"},
+{"id":"020","character":"Ichika Knight","variant":2,"rarity":"Limit","vocal":14,"dance":18,"visual":13,"type":"love","skill":"feet of fire","group":"LN"},
+{"id":"021","character":"Ichika in Colors","variant":3,"rarity":"Fes","vocal":13,"dance":13,"visual":19,"type":"hope","skill":"golden microphone","group":"LN"},
+
+{"id":"022","character":"Sister Saki","variant":1,"rarity":"Normal","vocal":20,"dance":8,"visual":17,"type":"happy","skill":"salt","group":"LN"},
+{"id":"023","character":"Forest Fairy Saki0","variant":2,"rarity":"Limit","vocal":10,"dance":10,"visual":10,"type":"love","skill":"divine card","group":"LN"},
+{"id":"024","character":"Saki Goes Out!","variant":3,"rarity":"Fes","vocal":8,"dance":20,"visual":16,"type":"hope","skill":"makeup shop visit","group":"LN"},
+
+{"id":"025","character":"Forbidden Witch Honami","variant":1,"rarity":"Normal","vocal":16,"dance":9,"visual":19,"type":"happy","skill":"gacha god","group":"LN"},
+{"id":"026","character":"Maid Honami","variant":2,"rarity":"Limit","vocal":9,"dance":18,"visual":17,"type":"love","skill":"feet of fire","group":"LN"},
+{"id":"027","character":"Sister Honami","variant":3,"rarity":"Fes","vocal":20,"dance":10,"visual":15,"type":"hope","skill":"banana slip","group":"LN"},
+
+{"id":"028","character":"MaidShiho","variant":1,"rarity":"Normal","vocal":14,"dance":11,"visual":18,"type":"happy","skill":"freeze spell","group":"LN"},
+{"id":"029","character":"Shiho Lone Wolf","variant":2,"rarity":"Limit","vocal":13,"dance":19,"visual":13,"type":"love","skill":"never give up","group":"LN"},
+{"id":"030","character":"Shiho in the Night","variant":3,"rarity":"Fes","vocal":17,"dance":12,"visual":15,"type":"hope","skill":"leek shield","group":"LN"},
+
+{"id":"031","character":"Angel Minori","variant":1,"rarity":"Normal","vocal":20,"dance":11,"visual":14,"type":"happy","skill":"gacha god","group":"MMJ"},
+{"id":"032","character":"Minori Sheep","variant":2,"rarity":"Limit","vocal":14,"dance":18,"visual":12,"type":"love","skill":"golden microphone","group":"MMJ"},
+{"id":"033","character":"Minori in Pajamas","variant":3,"rarity":"Fes","vocal":17,"dance":7,"visual":19,"type":"hope","skill":"never give up","group":"MMJ"},
+
+{"id":"034","character":"Queen Haruka","variant":1,"rarity":"Normal","vocal":18,"dance":8,"visual":18,"type":"happy","skill":"makeup shop visit","group":"MMJ"},
+{"id":"035","character":"Miko of Dawn Haruka","variant":2,"rarity":"Limit","vocal":15,"dance":13,"visual":17,"type":"love","skill":"salt","group":"MMJ"},
+{"id":"036","character":"Haruka Bright Summer","variant":3,"rarity":"Fes","vocal":14,"dance":20,"visual":10,"type":"hope","skill":"leek shield","group":"MMJ"},
+
+{"id":"037","character":"Cat Airi","variant":1,"rarity":"Normal","vocal":12,"dance":16,"visual":19,"type":"happy","skill":"banana slip","group":"MMJ"},
+{"id":"038","character":"Miss Airi","variant":2,"rarity":"Limit","vocal":17,"dance":15,"visual":12,"type":"love","skill":"golden microphone","group":"MMJ"},
+{"id":"039","character":"Airi Makeup","variant":3,"rarity":"Fes","vocal":5,"dance":20,"visual":17,"type":"hope","skill":"fate control","group":"MMJ"},
+
+{"id":"040","character":"Shizuku Fly","variant":1,"rarity":"Normal","vocal":19,"dance":18,"visual":7,"type":"happy","skill":"makeup shop visit","group":"MMJ"},
+{"id":"041","character":"Vampire Shizuku","variant":2,"rarity":"Limit","vocal":11,"dance":14,"visual":19,"type":"love","skill":"mic power cut","group":"MMJ"},
+{"id":"042","character":"Shizuku The Most Beautiful Model","variant":3,"rarity":"Fes","vocal":13,"dance":18,"visual":12,"type":"hope","skill":"feet of fire","group":"MMJ"},
+
+{"id":"043","character":"Kohane on a Date","variant":1,"rarity":"Normal","vocal":15,"dance":15,"visual":15,"type":"happy","skill":"feet of fire","group":"VBS","characterBase":"Kohane"},
+{"id":"044","character":"Mafia Kohane","variant":2,"rarity":"Limit","vocal":5,"dance":20,"visual":20,"type":"love","skill":"freeze spell","group":"VBS","characterBase":"Kohane"},
+{"id":"045","character":"Genius Photographer Kohane","variant":3,"rarity":"Fes","vocal":20,"dance":11,"visual":13,"type":"hope","skill":"mic power cut","group":"VBS","characterBase":"Kohane"},
+
+{"id":"046","character":"An & Hamne","variant":1,"rarity":"Normal","vocal":18,"dance":16,"visual":10,"type":"happy","skill":"gacha god","group":"VBS"},
+{"id":"047","character":"An sus?","variant":2,"rarity":"Limit","vocal":12,"dance":20,"visual":12,"type":"love","skill":"feet of fire","group":"VBS"},
+{"id":"048","character":"The Little Devil An","variant":3,"rarity":"Fes","vocal":16,"dance":16,"visual":16,"type":"hope","skill":"salt","group":"VBS"},
+
+{"id":"049","character":"Dog Akito","variant":1,"rarity":"Normal","vocal":11,"dance":17,"visual":15,"type":"happy","skill":"makeup shop visit","group":"VBS"},
+{"id":"050","character":"Dog2 Akito","variant":2,"rarity":"Limit","vocal":12,"dance":12,"visual":20,"type":"love","skill":"never give up","group":"VBS"},
+{"id":"051","character":"Akito in the Land of Dawn","variant":3,"rarity":"Fes","vocal":19,"dance":11,"visual":14,"type":"hope","skill":"leek shield","group":"VBS"},
+
+{"id":"052","character":"Toya in a Bird Cage","variant":1,"rarity":"Normal","vocal":17,"dance":12,"visual":18,"type":"happy","skill":"gacha god","group":"VBS"},
+{"id":"053","character":"Toya Flower","variant":2,"rarity":"Limit","vocal":17,"dance":18,"visual":10,"type":"love","skill":"golden microphone","group":"VBS"},
+{"id":"054","character":"Toya a Moment to Miss","variant":3,"rarity":"Fes","vocal":18,"dance":12,"visual":12,"type":"hope","skill":"fate control","group":"VBS"},
+
+{"id":"055","character":"Tsukasa & Piano","variant":1,"rarity":"Normal","vocal":19,"dance":8,"visual":17,"type":"happy","skill":"makeup shop visit","group":"WxS"},
+{"id":"056","character":"Tsukasa Star","variant":2,"rarity":"Limit","vocal":15,"dance":9,"visual":20,"type":"love","skill":"mic power cut","group":"WxS"},
+{"id":"057","character":" Good Bro Tsukasa","variant":3,"rarity":"Fes","vocal":11,"dance":20,"visual":13,"type":"hope","skill":"leek shield","group":"WxS"},
+
+{"id":"058","character":"Emu Knight","variant":1,"rarity":"Normal","vocal":15,"dance":18,"visual":10,"type":"happy","skill":"fate control","group":"WxS"},
+{"id":"059","character":"Emu After the Rain","variant":2,"rarity":"Limit","vocal":20,"dance":10,"visual":14,"type":"love","skill":"golden microphone","group":"WxS"},
+{"id":"060","character":"Lady Emu","variant":3,"rarity":"Fes","vocal":14,"dance":13,"visual":18,"type":"hope","skill":"never give up","group":"WxS"},
+
+{"id":"061","character":"Princess Nene","variant":1,"rarity":"Normal","vocal":9,"dance":15,"visual":20,"type":"happy","skill":"feet of fire","group":"WxS"},
+{"id":"062","character":"Gamer Nene","variant":2,"rarity":"Limit","vocal":11,"dance":19,"visual":15,"type":"love","skill":"freeze spell","group":"WxS"},
+{"id":"063","character":"The Melody of the Dance Nene","variant":3,"rarity":"Fes","vocal":20,"dance":15,"visual":10,"type":"hope","skill":"salt","group":"WxS"},
+
+{"id":"064","character":"Cowboy Rui","variant":1,"rarity":"Normal","vocal":12,"dance":13,"visual":19,"type":"happy","skill":"banana slip","group":"WxS"},
+{"id":"065","character":"Wizard Rui","variant":2,"rarity":"Limit","vocal":12,"dance":18,"visual":12,"type":"love","skill":"makeup shop visit","group":"WxS"},
+{"id":"066","character":"Rui's Imaginary Land","variant":3,"rarity":"Fes","vocal":19,"dance":14,"visual":11,"type":"hope","skill":"gacha god","group":"WxS"},
+
+{"id":"067","character":"Sleeping Kanade","variant":1,"rarity":"Normal","vocal":19,"dance":5,"visual":18,"type":"happy","skill":"gacha god","group":"Niko"},
+{"id":"068","character":"Kanade Valentine","variant":2,"rarity":"Limit","vocal":13,"dance":10,"visual":20,"type":"love","skill":"never give up","group":"Niko"},
+{"id":"069","character":"Kanade in Dreamland","variant":3,"rarity":"Fes","vocal":17,"dance":18,"visual":10,"type":"hope","skill":"leek shield","group":"Niko"},
+
+{"id":"070","character":"Mafuyu in bridge","variant":1,"rarity":"Normal","vocal":12,"dance":14,"visual":18,"type":"happy","skill":"feet of fire","group":"Niko"},
+{"id":"071","character":"Vampire Mafuyu","variant":2,"rarity":"Limit","vocal":11,"dance":15,"visual":19,"type":"love","skill":"hidden skill","group":"Niko"},
+{"id":"072","character":"Mafuyu in His Thoughts","variant":3,"rarity":"Fes","vocal":18,"dance":14,"visual":12,"type":"hope","skill":"mic power cut","group":"Niko"},
+
+{"id":"073","character":"Ena desu","variant":1,"rarity":"Normal","vocal":14,"dance":12,"visual":17,"type":"happy","skill":"freeze spell","group":"Niko"},
+{"id":"074","character":"Ena the Traveler","variant":2,"rarity":"Limit","vocal":10,"dance":19,"visual":13,"type":"love","skill":"golden microphone","group":"Niko"},
+{"id":"075","character":"Artist Ena","variant":2,"rarity":"Fes","vocal":20,"dance":13,"visual":11,"type":"happy","skill":"golden microphone","group":"Niko"},
+
+{"id":"076","character":"Little Cat Mizuki","variant":1,"rarity":"Normal","vocal":12,"dance":13,"visual":18,"type":"happy","skill":"hidden skill","group":"Niko"},
+{"id":"077","character":"Mizuki happy","variant":2,"rarity":"Limit","vocal":14,"dance":15,"visual":16,"type":"love","skill":"salt","group":"Niko"},
+{"id":"078","character":"Mizuki in the Bedroom","variant":3,"rarity":"Fes","vocal":20,"dance":16,"visual":7,"type":"hope","skill":"gacha god","group":"Niko"}
+]

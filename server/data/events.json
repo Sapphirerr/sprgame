@@ -1,0 +1,21 @@
+[
+  {"id":1,"name":"ไม่มีอะไร","effect":"none","description":"ไม่มีอะไรเกิดขึ้นเลย เล่นปกติ"},
+  {"id":2,"name":"Magical Mirai","effect":"group_buff","group":"VS","scoreBonus":5,"description":"การ์ดสมาชิก VS คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":3,"name":"งานโรงเรียน","effect":"group_buff","group":"LN","scoreBonus":5,"description":"การ์ดสมาชิก LN คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":4,"name":"เวทีไอดอล","effect":"group_buff","group":"MMJ","scoreBonus":5,"description":"การ์ดสมาชิก MMJ คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":5,"name":"Vivid Street","effect":"group_buff","group":"VBS","scoreBonus":5,"description":"การ์ดสมาชิก VBS คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":6,"name":"Phoenix land","effect":"group_buff","group":"WxS","scoreBonus":5,"description":"การ์ดสมาชิก WxS คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":7,"name":"โซเซียลไวรัล","effect":"group_buff","group":"Niko","scoreBonus":5,"description":"การ์ดสมาชิก Niko คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":8,"name":"Festival","effect":"rarity_buff","rarity":["Limit","Fes"],"scoreBonus":10,"description":"การ์ดระดับลิมิต/เฟส คะแนนเพิ่มขึ้น 10 คะแนน"},
+  {"id":9,"name":"ของขวัญจาก Mikudayo","effect":"draw_3","description":"ผู้เล่นสุ่มกาชาคนละ 3 ใบ"},
+  {"id":10,"name":"NeneRobo คลั่ง","effect":"max_stat_zero","description":"ค่าพลังที่เยอะที่สุดของการ์ดนั้น จะถูกลบไป"},
+  {"id":11,"name":"มูฟวี่ฉายแล้ว!","effect":"heal_1","description":"ด้วยพลังของมิกุจากหนังผู้เล่นฟื้นฟูพลังใจ 1 หน่วย"},
+  {"id":12,"name":"SapphireR","effect":"sapphire_r","scoreBonus":30,"description":"Kohane คะแนนเพิ่มขึ้น 30 คะแนน"},
+  {"id":13,"name":"มิกุVBSเข้าครัว","effect":"stat_minus_2","description":"ลบค่าพลังทุกอย่างลงอย่างละ 2 หน่วย"},
+  {"id":14,"name":"รายการปริศนา!?","effect":"special_battle","description":"ไม่สุ่มการแข่งขัน แข่งรูปแบบพิเศษ ค่าพลังที่+กัน ไม่มีตัวคูณ"},
+  {"id":15,"name":"โหนเซไก","effect":"reveal_cards","description":"หงายการ์ดในเทิร์นนั้น"},
+  {"id":16,"name":"กุ้ง","effect":"shrimp_curse","description":"ค่าพลังใจของผู้เล่น -1 "},
+  {"id":17,"name":"Type love บัฟ","effect":"type_buff","type":"love","scoreBonus":5,"description":"Type love คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":18,"name":"Type hope บัฟ","effect":"type_buff","type":"hope","scoreBonus":5,"description":"Type hope คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":19,"name":"Type happy บัฟ","effect":"type_buff","type":"happy","scoreBonus":5,"description":"Type happy คะแนนเพิ่มขึ้น 5 คะแนน"}
+]
