@@ -577,17 +577,11 @@
 
     @media (max-width: 640px) {
       #audioControlPanel {
-        bottom: 16px;
-        right: 16px;
-        gap: 8px;
-        flex-direction: column;
-        align-items: flex-end;
+        display: none !important;
       }
 
       .audio-toggle-btn {
-        min-width: auto;
-        width: 120px;
-        justify-content: center;
+        display: none !important;
       }
     }
 
@@ -791,6 +785,35 @@
       font-weight: 700;
       color: #00ff88;
       margin: 10px 0;
+    }
+
+    .event-guide-toggle-btn {
+      position: absolute;
+      top: -10px;
+      right: 0;
+      background: linear-gradient(135deg, rgba(56, 249, 255, 0.9), rgba(255, 79, 216, 0.8));
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      color: #05102c;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(56, 249, 255, 0.4);
+    }
+
+    .event-guide-toggle-btn:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 8px 25px rgba(56, 249, 255, 0.6);
+    }
+
+    .event-guide-toggle-btn:active {
+      transform: scale(0.95);
     }
 
     /* Play Card Phase */
@@ -1319,9 +1342,94 @@
       transform: translateX(-50%) translateY(-2px);
     }
 
+    /* ============== CARD HAND COLLAPSE (Mobile) ============== */
+    #playCardPhase.card-hand-collapsed {
+      pointer-events: none;
+      background: transparent !important;
+      display: none !important;
+    }
+
+    #playCardPhase.card-hand-collapsed #phaseHandContainer {
+      opacity: 0;
+      transform: translateY(24px) scale(0.97);
+      pointer-events: none;
+      box-shadow: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
+    }
+
+    #playCardPhase.card-hand-collapsed .button-group {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    #playCardPhase.card-hand-collapsed .cardPreviewArea {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    #playCardPhase.card-hand-collapsed .playCardHeader {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .card-hand-reopen-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, rgba(56, 249, 255, 0.9), rgba(255, 79, 216, 0.8));
+      color: #05102c;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      box-shadow: 0 18px 40px rgba(5, 15, 43, 0.6);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 260;
+      cursor: pointer;
+    }
+
+    .card-hand-reopen-btn:hover {
+      transform: translateX(-50%) translateY(-2px);
+    }
+
     @media (max-width: 640px) {
       .action-buttons {
         grid-template-columns: 1fr;
+      }
+
+      .timer {
+        font-size: 1.5rem;
+      }
+
+      .action-countdown {
+        font-size: 0.9rem;
+        padding: 8px 14px;
+        gap: 8px;
+      }
+
+      .action-countdown-value {
+        font-size: 1.2rem;
+      }
+
+      .action-modal {
+        padding: clamp(16px, 4vw, 32px);
+      }
+
+      .action-title {
+        font-size: 1.5rem;
+      }
+
+      .action-chip {
+        flex: 1 1 calc(50% - 6px);
       }
     }
 
@@ -1330,6 +1438,179 @@
       text-align: center;
       font-size: 0.85rem;
       color: rgba(245, 251, 255, 0.55);
+    }
+
+    /* ============== EVENTS CHEAT SHEET MODAL ============== */
+    #eventsModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 40, 0.95));
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    #eventsModal.show {
+      display: flex;
+    }
+
+    .events-modal-content {
+      background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9));
+      border: 2px solid #00d2ff;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 50px rgba(0, 210, 255, 0.5);
+    }
+
+    .events-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid rgba(0, 210, 255, 0.3);
+    }
+
+    .events-modal-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffd700;
+      margin: 0;
+    }
+
+    .events-modal-close {
+      background: linear-gradient(135deg, #ff6b6b, #ff8787);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .events-modal-close:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+    }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+    }
+
+    .event-card {
+      background: rgba(0, 210, 255, 0.1);
+      border: 2px solid #00d2ff;
+      border-radius: 12px;
+      padding: 15px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+
+    .event-card:hover {
+      background: rgba(0, 210, 255, 0.2);
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .event-card-number {
+      display: inline-block;
+      background: #00d2ff;
+      color: #05102c;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .event-card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffd700;
+      margin: 8px 0;
+    }
+
+    .event-card-description {
+      font-size: 0.95rem;
+      color: #b0e0e6;
+      line-height: 1.5;
+    }
+
+    .event-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 210, 255, 0.2);
+      border: 1px solid #00d2ff;
+      color: #00d2ff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .event-toggle-btn:hover {
+      background: rgba(0, 210, 255, 0.4);
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+    }
+
+    .table-event-item {
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .table-event-item:hover {
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 640px) {
+      .events-modal-content {
+        padding: 20px;
+        max-height: 95vh;
+      }
+
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .events-modal-title {
+        font-size: 1.5rem;
+      }
+
+      .event-card {
+        padding: 12px;
+      }
+
+      .event-card-name {
+        font-size: 1rem;
+      }
+
+      .event-card-description {
+        font-size: 0.9rem;
+      }
     }
 
     /* Result Overlay */
@@ -1972,6 +2253,19 @@
     <!-- ✅ My Hand Cards - Always Visible (UNO Style) -->
     <div class="hand" id="hand" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: nowrap; gap: 0; z-index: 80; max-width: 90%;"></div>
 
+    <!-- ✅ Events Cheat Sheet Modal -->
+    <div id="eventsModal">
+      <div class="events-modal-content">
+        <div class="events-modal-header">
+          <h2 class="events-modal-title">📋 Event Guide</h2>
+          <button class="events-modal-close" id="closeEventsModal">×</button>
+        </div>
+        <div class="events-grid" id="eventsGrid">
+          <!-- Events will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
     <!-- ✅ Card Detail Preview (Left Side) -->
     <div id="cardDetailPreview" style="position: fixed; left: 20px; top: 50%; transform: translateY(-50%); width: 200px; height: 280px; background: rgba(0,0,0,0.9); border: 3px solid #00d2ff; border-radius: 15px; padding: 15px; display: none; z-index: 85; box-shadow: 0 0 30px rgba(0,210,255,0.5);">
       <div id="previewCardImage" style="width: 100%; height: 180px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 10px;"></div>
@@ -2066,6 +2360,10 @@
       👁‍🗨 <span id="actionReopenLabel">เปิดหน้าต่าง Action</span>
     </button>
 
+    <button id="cardHandReopen" class="card-hand-reopen-btn" type="button" aria-expanded="false">
+      🎴 <span id="cardHandReopenLabel">เปิดการ์ด</span>
+    </button>
+
     <div id="resultOverlay">
       <div class="result-wrapper">
         <!-- Title -->
@@ -2104,6 +2402,10 @@
     const actionPhaseElement = document.getElementById('actionPhase');
     const actionReopenBtn = document.getElementById('actionPhaseReopen');
     let actionModalCollapsed = false;
+    
+    const playCardPhaseElement = document.getElementById('playCardPhase');
+    const cardHandReopenBtn = document.getElementById('cardHandReopen');
+    let cardHandCollapsed = false;
     
     // Language system - Read from URL parameter or localStorage
     const urlParams = new URLSearchParams(window.location.search);
@@ -2331,6 +2633,29 @@
     let _countdownInterval = null;
     let _joinMode = false;
 
+    // Events Data - 19 Events Cheat Sheet
+    const EVENTS_DATA = [
+      {id: 1, name: "ไม่มีอะไร", description: "ไม่มีอะไรเกิดขึ้นเลย เล่นปกติ"},
+      {id: 2, name: "Magical Mirai", description: "การ์ดสมาชิก VS คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 3, name: "งานโรงเรียน", description: "การ์ดสมาชิก LN คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 4, name: "เวทีไอดอล", description: "การ์ดสมาชิก MMJ คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 5, name: "Vivid Street", description: "การ์ดสมาชิก VBS คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 6, name: "Phoenix land", description: "การ์ดสมาชิก WxS คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 7, name: "โซเซียลไวรัส", description: "การ์ดสมาชิก Niko คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 8, name: "Festival", description: "การ์ดระดับลิมิต/เฟส คะแนนเพิ่มขึ้น 10 คะแนน"},
+      {id: 9, name: "ของขวัญจาก Mikudayo", description: "ผู้เล่นสุ่มกาชาคนละ 3 ใบ"},
+      {id: 10, name: "NeneRobo คลั่ง", description: "ค่าพลังที่เยอะที่สุดของการ์ดนั้น จะถูกลบไป"},
+      {id: 11, name: "มูฟวี่ฉายแล้ว!", description: "ด้วยพลังของมิกุจากหนังผู้เล่นฟื้นฟูพลังใจ 1 หน่วย"},
+      {id: 12, name: "SapphireR", description: "Kohane คะแนนเพิ่มขึ้น 30 คะแนน"},
+      {id: 13, name: "มิกุVBSเข้าครัว", description: "ลบค่าพลังทุกอย่างลงอย่างละ 2 หน่วย"},
+      {id: 14, name: "รายการปริศนา!?", description: "ไม่สุ่มการแข่งขัน แข่งรูปแบบพิเศษ ค่าพลังที่+กัน ไม่มีตัวคูณ"},
+      {id: 15, name: "โหนเซไก", description: "หงายการ์ดในเทิร์นนั้น"},
+      {id: 16, name: "กุ้ง", description: "ค่าพลังใจของผู้เล่น -1"},
+      {id: 17, name: "Type love บัฟ", description: "Type love คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 18, name: "Type hope บัฟ", description: "Type hope คะแนนเพิ่มขึ้น 5 คะแนน"},
+      {id: 19, name: "Type happy บัฟ", description: "Type happy คะแนนเพิ่มขึ้น 5 คะแนน"}
+    ];
+
     const PHASE_TIMERS = {
       eventReveal: 5,
       playCard: 25,
@@ -2369,6 +2694,67 @@
       }
     }
 
+    // Card Hand Collapse/Expand Functions
+    function collapseCardHand() {
+      if (!playCardPhaseElement || cardHandCollapsed) return;
+      cardHandCollapsed = true;
+      playCardPhaseElement.classList.add('card-hand-collapsed');
+      if (cardHandReopenBtn) {
+        cardHandReopenBtn.style.display = 'flex';
+        cardHandReopenBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    function expandCardHand() {
+      if (!playCardPhaseElement || !cardHandCollapsed) return;
+      cardHandCollapsed = false;
+      playCardPhaseElement.classList.remove('card-hand-collapsed');
+      if (cardHandReopenBtn) {
+        cardHandReopenBtn.style.display = 'none';
+        cardHandReopenBtn.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    // Auto-collapse card hand on mobile when showing action phase
+    function showActionPhase() {
+      if (window.innerWidth <= 640 && !cardHandCollapsed) {
+        collapseCardHand();
+      }
+    }
+
+    // Events Modal Functions
+    function populateEventsModal() {
+      const eventsGrid = document.getElementById('eventsGrid');
+      if (!eventsGrid) return;
+      
+      eventsGrid.innerHTML = EVENTS_DATA.map(event => `
+        <div class="event-card">
+          <div class="event-card-number">#${event.id}</div>
+          <div class="event-card-name">${event.name}</div>
+          <div class="event-card-description">${event.description}</div>
+        </div>
+      `).join('');
+    }
+
+    function showEventsModal() {
+      const modal = document.getElementById('eventsModal');
+      if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function hideEventsModal() {
+      const modal = document.getElementById('eventsModal');
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Populate events on load
+    populateEventsModal();
+
     if (actionPhaseElement) {
       actionPhaseElement.addEventListener('click', (event) => {
         if (event.target === actionPhaseElement) {
@@ -2380,6 +2766,48 @@
     if (actionReopenBtn) {
       actionReopenBtn.addEventListener('click', () => {
         expandActionModal();
+      });
+    }
+
+    if (cardHandReopenBtn) {
+      cardHandReopenBtn.addEventListener('click', () => {
+        expandCardHand();
+      });
+    }
+
+    // Events Modal Event Listeners
+    const closeEventsModalBtn = document.getElementById('closeEventsModal');
+    if (closeEventsModalBtn) {
+      closeEventsModalBtn.addEventListener('click', hideEventsModal);
+    }
+
+    const eventsModal = document.getElementById('eventsModal');
+    if (eventsModal) {
+      eventsModal.addEventListener('click', (e) => {
+        if (e.target === eventsModal) {
+          hideEventsModal();
+        }
+      });
+    }
+
+    const tableEvent = document.getElementById('tableEvent');
+    if (tableEvent) {
+      tableEvent.addEventListener('click', showEventsModal);
+    }
+
+    // PlayCardPhase click listener to collapse/expand card hand
+    if (playCardPhaseElement) {
+      playCardPhaseElement.addEventListener('click', (event) => {
+        // Check if click is on empty space (not on cards, buttons, or header)
+        const isClickOnCard = event.target.closest('.card');
+        const isClickOnButton = event.target.closest('.button-group') || event.target.closest('.btn');
+        const isClickOnHeader = event.target.closest('.playCardHeader') || event.target.closest('.cardPreviewArea');
+        
+        if (!isClickOnCard && !isClickOnButton && !isClickOnHeader && !cardHandCollapsed) {
+          collapseCardHand();
+        } else if (cardHandCollapsed && !isClickOnCard && !isClickOnButton && !isClickOnHeader) {
+          expandCardHand();
+        }
       });
     }
 
@@ -2987,8 +3415,21 @@
         cheatBtn.onmouseout = () => cheatBtn.style.boxShadow = 'none';
         cheatBtn.onclick = () => showCheatSheetModal();
         
+        const eventBtn = document.createElement('button');
+        eventBtn.textContent = '📋 EVENT GUIDE';
+        eventBtn.style.cssText = `
+          padding: 12px 20px; font-size: 0.95rem; font-weight: bold;
+          background: linear-gradient(135deg, #9b59b6, #8e44ad);
+          border: 2px solid #bb86fc; color: #bb86fc; border-radius: 8px;
+          cursor: pointer; transition: all 0.3s; width: 140px;
+        `;
+        eventBtn.onmouseover = () => eventBtn.style.boxShadow = '0 0 20px rgba(187, 134, 252, 0.5)';
+        eventBtn.onmouseout = () => eventBtn.style.boxShadow = 'none';
+        eventBtn.onclick = () => showEventsModal();
+        
         btnContainer.appendChild(ruleBtn);
         btnContainer.appendChild(cheatBtn);
+        btnContainer.appendChild(eventBtn);
       }
 
       // Find my position and rotate player order so I'm at bottom (p1)
@@ -4770,6 +5211,15 @@
           }
           socket.emit('playCard', { roomCode: gameState.roomCode, card: gameState.myCard, skipTurn: false });
           document.getElementById('playCardPhase').classList.remove('show');
+          
+          // Hide card hand reopen button when phase ends
+          if (cardHandReopenBtn) {
+            cardHandReopenBtn.style.display = 'none';
+          }
+          // Auto-expand card hand when phase ends
+          if (playCardPhaseElement && playCardPhaseElement.classList.contains('card-hand-collapsed')) {
+            expandCardHand();
+          }
         }
       }, 1000);
     }
@@ -4792,6 +5242,16 @@
       if (actionReopenBtn) {
         actionReopenBtn.style.display = 'none';
         actionReopenBtn.setAttribute('aria-expanded', 'true');
+      }
+      
+      // Auto-expand card hand when action phase starts
+      if (playCardPhaseElement && playCardPhaseElement.classList.contains('card-hand-collapsed')) {
+        expandCardHand();
+      }
+      
+      // Hide card hand reopen button when action phase starts
+      if (cardHandReopenBtn) {
+        cardHandReopenBtn.style.display = 'none';
       }
       
       const skillTextSpan = document.querySelector('#actionBtn2 .action-text');
