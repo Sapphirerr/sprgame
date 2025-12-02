@@ -42,9 +42,11 @@
   "menuLabel": "メニュー",
   "menuHome": "ホーム",
   "menuAbout": "について",
-  "menuGameInfo": "プロジェクト セカイ情報",
+  "menuGameInfo": "プロセカ情報",
+  "menuEventDetails": "📋 19つのイベント詳細",
   "menuAboutContent": "SPRgameは、プロジェクトセカイファンのためにリアルタイムマルチプレイカードバトルの体験を共有するために作成されたファンメイドプロジェクトです。 <br><br>📺 YouTubeチャンネル: <a href='https://www.youtube.com/@SAP_bibi37' target='_blank' style='color: #38f9ff; text-decoration: underline;'>@SAP_bibi37</a><br>📧 お問い合わせ: <a href='mailto:SapphireR.spr@gmail.com' style='color: #38f9ff; text-decoration: underline;'>SapphireR.spr@gmail.com</a>",
   "menuGameInfoContent": "プロジェクトセカイ カラフルステージ！ feat. 初音ミク は、SEGA × Colorful Paletteのリズムゲームです。その世界をブラウザの高速カードバトルとして再想像しました。",
+  "menuEventDetailsContent": "<strong>19つのイベントと効果：</strong><br><br><strong>#1 何もない</strong> - 効果なし、通常プレイ<br><strong>#2 Magical Mirai</strong> - VS メンバーカードは +5 ポイント<br><strong>#3 学園祭</strong> - LN メンバーカードは +5 ポイント<br><strong>#4 アイドルステージ</strong> - MMJ メンバーカードは +5 ポイント<br><strong>#5 Vivid Street</strong> - VBS メンバーカードは +5 ポイント<br><strong>#6 フェニックスランド</strong> - WxS メンバーカードは +5 ポイント<br><strong>#7 ソーシャルウイルス</strong> - Niko メンバーカードは +5 ポイント<br><strong>#8 フェスティバル</strong> - リミテッド/フェス レアリティカードは +10 ポイント<br><strong>#9 ミクダヨーからの贈り物</strong> - 全プレイヤーが3枚カードを引く<br><strong>#10 ねねロボ狂乱</strong> - カードの最高ステータスが削除される<br><strong>#11 映画公開！</strong> - プレイヤーはミクの力で 1 HP 回復<br><strong>#12 SapphireR</strong> - 更衣は +30 ポイント<br><strong>#13 ミク VBS 台所</strong> - 全カードステータスが 2 減少<br><strong>#14 謎の番組!?</strong> - 特別バトルモード、パワー値は加算、倍率なし<br><strong>#15 よしの世界</strong> - このターンのカードが公開される<br><strong>#16 エビ</strong> - プレイヤーは 1 HP を失う<br><strong>#17 タイプ愛バフ</strong> - 愛タイプカードは +5 ポイント<br><strong>#18 タイプ希望バフ</strong> - 希望タイプカードは +5 ポイント<br><strong>#19 タイプ幸福バフ</strong> - 幸福タイプカードは +5 ポイント",
   
   "events": {
     "none": "何もない",
