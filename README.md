@@ -1,102 +1,117 @@
-# 🎮 SPRgame - Sekai Card Battle
+# 🎮 SPRgame - Project Sekai Card Battle (Fanmade)
 
-A real-time multiplayer card battle game based on Project Sekai characters. Players compete using unique cards with stats and special skills in a 2-5 player match.
+A real-time multiplayer card battle game inspired by **Project Sekai: Colorful Stage!** Players compete using strategy and luck in exciting card battles with friends.
 
-## Quick Start
+## 🚀 Quick Start
 
-### 1. Install & Run
+### Local Development
 ```bash
-cd SPRgame
+# Install dependencies
 npm install
+
+# Start server
 npm start
 ```
 
-The server will start at: **http://localhost:3000**
+Server runs at: **http://localhost:3000**
 
-### 2. Create/Join Room
-- **Create Room**: Enter your name, click "สร้างห้องใหม่"
-- **Join Room**: Enter the 6-character room code and click "เข้าร่วมเลย!"
+### Play Online
+Visit: **[SPRgame on Railway.app](https://sprgame.railway.app)** (coming soon)
 
-### 3. Wait for Players
-- Share the room code with friends
-- Everyone clicks "พร้อมแล้ว!" (Ready)
-- Game starts automatically when 2+ players are ready
+### How to Play
+1. **Create Room** - Enter your name, get a 6-digit room code
+2. **Share Code** - Send code to friends
+3. **Join Room** - Friends enter code to join
+4. **Ready Up** - Everyone clicks "พร้อมแล้ว!" when ready
+5. **Battle** - Select cards and actions to win!
 
-## Game Rules
+## 🌍 Languages Supported
+
+- 🇹🇭 **Thai (ไทย)**
+- 🇬🇧 **English**
+- 🇯🇵 **日本語 (Japanese)**
+
+Language preference saves automatically via localStorage
+
+## 📋 Game Overview
 
 ### Objective
-Last player with HP > 0 wins!
+- Be the last player with **HP > 0** to win!
+- Each player starts with **10 HP**
+- Battles happen in real-time across multiple rounds
 
-### Each Turn
-1. **Event & Competition Announced** (Random)
-   - 19 different events with special effects
-   - 3 competition types: Vocal, Dance, or Visual
+### Each Round
+1. **Random Event & Competition Type** - Vocal, Dance, or Visual
+2. **Select Card** (30 seconds) - Choose from your hand
+3. **Choose Action** (30 seconds) - Gacha/Skill/Compete/Flee
+4. **Results Announced** - Highest score wins, others lose 1 HP
 
-2. **Select Card** (30 seconds)
-   - Choose 1 card from your hand to battle
-   - Or skip turn (costs 1 HP if only 1 player plays)
+### Card Stats
+Cards have 3 base stats:
+- **Vocal** 🎤
+- **Dance** 💃
+- **Visual** ✨
 
-3. **Choose Action** (30 seconds)
-   - **Action 1**: Draw nerfed card (0 points)
-   - **Action 2**: Use skill (2-turn cooldown)
-   - **Action 3**: Normal battle (standard)
-   - **Action 4**: Retreat/dodge (keep card, lose 1 HP)
+Scoring changes based on competition type.
 
-4. **Battle Results**
-   - Highest score wins (no HP loss)
-   - Others lose 1 HP
-   - Draw 1 new card
+### Skills
+Special abilities on select cards:
+- Gacha God - Draw extra cards
+- Shield Onion - Block damage
+- Stat boosters - Temporarily increase stats
+- And more! Each skill has unique effects
 
-### Scoring
-Your score depends on the competition:
-- **Vocal**: Vocal×2 + Dance×1.5 + Visual×1
-- **Dance**: Dance×2 + Visual×1.5 + Vocal×1
-- **Visual**: Visual×2 + Vocal×1.5 + Dance×1
+## 🎨 Features
 
-### Card Skills
-- **Gacha God** (10 cards): Draw 3 bonus cards
-- **Don't Lose** (6 cards): Recover 2 HP
-- **Shield Onion** (6 cards): Immune to HP loss this turn
-- **Mic/Boots/Makeup** (9 each): +5 to that stat
-- **SapphireR** (1 card): +10 to all stats
-- **Plus more!**
+✅ **Real-time Multiplayer** (Socket.io)
+✅ **Elegant UI** - Glassmorphic design with animations
+✅ **Multi-language** - Thai/English/Japanese
+✅ **Side Menu System** - Home/About/Game Info
+✅ **Room-based Lobbies** - 2-5 players per game
+✅ **Skill Cooldown System** - Strategic depth
+✅ **Responsive Design** - Works on mobile & desktop
 
-## Game Features
-
-✅ **78 Unique Cards** (26 characters × 3 variants)
-✅ **19 Events** (Buffs, debuffs, special effects)
-✅ **Real-time Multiplayer** (2-5 players)
-✅ **Skill Cooldown System** (Strategic gameplay)
-✅ **Beautiful UI** (Thai language, Kanit font)
-✅ **Socket.io Networking** (Smooth synchronization)
-
-## File Structure
+## 📁 Project Structure
 
 ```
+sprgame/
 ├── server/
-│   ├── index.js (Main server & game logic)
-│   ├── utils.js (Card/event utilities)
+│   ├── index.js              # Main server & Socket.io logic
+│   ├── gameManager.js        # Game state management
+│   ├── roomManager.js        # Room & player management
+│   ├── skillManager.js       # Skill system logic
+│   ├── utils.js              # Card utilities
 │   └── data/
-│       ├── cards.json (78 cards)
-│       └── events.json (19 events)
+│       ├── cards.json        # Card database
+│       └── events.json       # Event definitions
 ├── client/
 │   ├── pages/
-│   │   ├── index.html (Main menu)
-│   │   ├── createRoom.html
-│   │   ├── joinRoom.html
-│   │   ├── lobby.html (Waiting room)
-│   │   └── gameplay.html (Battle)
-│   └── css/ (Bootstrap files)
-└── package.json
+│   │   ├── index.html        # Home page
+│   │   ├── lobby.html        # Room lobby
+│   │   └── game.html         # Battle interface
+│   ├── assets/
+│   │   ├── style.css         # Main styles
+│   │   ├── gameplay.css      # Game styles
+│   │   ├── home-redesign.css # Home page styles
+│   │   ├── images/           # Game assets
+│   │   └── sounds/           # Audio effects
+├── locales/
+│   ├── th.json               # Thai translations
+│   ├── en.json               # English translations
+│   └── ja.json               # Japanese translations
+├── package.json              # Dependencies
+└── README.md                 # This file
 ```
 
-## Requirements
+## 🛠 Tech Stack
 
-- **Node.js** 14+ 
-- **npm** or yarn
-- **Browser**: Chrome, Firefox, Edge, Safari
+- **Backend**: Node.js + Express.js
+- **Networking**: Socket.io (real-time communication)
+- **Frontend**: Vanilla HTML/CSS/JavaScript
+- **Styling**: CSS Grid, Flexbox, Animations
+- **Data**: JSON (cards, events, translations)
 
-## Dependencies
+## 📦 Dependencies
 
 ```json
 {
@@ -106,111 +121,96 @@ Your score depends on the competition:
 }
 ```
 
-## Game Commands
+## 🎮 Commands
 
-### Server
 ```bash
-npm start      # Start server
-npm run dev    # Development mode (auto-reload)
+# Method 1: Using npm (Recommended)
+npm start
+
+# Method 2: Using Node directly
+node server/index.js
 ```
 
-### Client
-Open in browser: http://localhost:3000
+Both start the server at: **http://localhost:3000**
 
-## Tips & Tricks
+## 🎯 Menu System
 
-### Card Management
-- Watch the competition type (Vocal/Dance/Visual)
-- Play cards that match the competition
-- Save rare cards for favorable events
+**Top-left hamburger menu (☰):**
+- 🏠 **Home** - Return to home page
+- ℹ️ **About** - Project info & links
+- 🎮 **Game Info** - Project Sekai info
 
-### Actions
-- **Gacha (Action 1)**: Use when desperate for cards
-- **Skill (Action 2)**: Best for high-stat card skills
-- **Normal (Action 3)**: Standard, always safe
-- **Retreat (Action 4)**: Keep good cards, sacrifice HP
+Menu is **only visible in lobby** phase for clean gameplay.
 
-### Strategy
-- Track other players' HP
-- Remember event buffs/debuffs
-- Build up card variety
-- Use skills at critical moments
-- Don't waste strong cards
+## 🔗 Contact & Links
 
-## Troubleshooting
+Creator: **SAP_bibi37**
+- 📺 YouTube: [@SAP_bibi37](https://www.youtube.com/@SAP_bibi37)
+- 📧 Email: SapphireR.spr@gmail.com
 
-### Port Already in Use
+## 📖 Game Rules Summary
+
+1. Players take turns selecting cards and actions
+2. Each card is revealed simultaneously
+3. Highest score wins the round (no HP loss)
+4. Other players lose 1 HP
+5. Dead players become spectators
+6. Last player standing wins!
+
+**Win Conditions:**
+- ✅ Be the last player with HP > 0
+- ✅ Other players eliminated (HP = 0)
+
+## ⚙️ Troubleshooting
+
+**Port already in use:**
 ```bash
-# On Windows PowerShell:
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-
-# Or change port:
-PORT=3001 npm start
+# Windows PowerShell
+Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess | Stop-Process
+# Or change port
+$env:PORT=3001; npm start
 ```
 
-### Can't Connect
-- Check server is running (terminal shows "🎮 SPRGame Sekai เปิดเซิร์ฟแล้ว!")
-- Clear browser cache (Ctrl+Shift+Del)
-- Disable browser extensions
+**Browser issues:**
+- Clear cache: Ctrl+Shift+Delete
+- Check console: F12 → Console tab
+- Check network: F12 → Network tab (Socket.io connections)
+- Refresh: Ctrl+R
+
+**Socket.io not connecting:**
+- Verify server is running
 - Check firewall settings
+- Disable browser extensions
+- Try incognito mode
 
-### Socket.io Issues
-- F12 → Console tab → Check for errors
-- F12 → Network tab → Check Socket.io connections
-- Refresh page (Ctrl+R)
+## 🚀 Deployment
 
-## Game Balance
+### Railway.app (Recommended)
+1. Push code to GitHub
+2. Connect Railway to GitHub repo
+3. Auto-deploy on push
+4. Get public URL instantly
 
-### Card Power Distribution
-- **Normal Rarity**: 40-45 total stats
-- **Limit Rarity**: 42-47 total stats
-- **Fes Rarity**: 44-50 total stats (gets Festival bonus)
+### Environment Variables
+- `PORT` - Server port (default: 3000)
+- Auto-configured by Railway
 
-### Skill Distribution
-- 47/78 cards have active skills
-- 31/78 cards have no special skill
-- Skills provide strategic variety, not raw power
+## 📝 License
 
-### Event Balance
-- 8 basic events (mostly neutral)
-- 11 specialized events (help different card types)
-- 19-turn cycle ensures variety
+Fan-made project for **Project Sekai: Colorful Stage!** fans.
+Made with ❤️ for the Sekai community.
 
-## Future Updates
+## 🎵 Credits
 
-- [ ] Card artwork and animations
-- [ ] Chat system for in-game communication
-- [ ] Statistics and leaderboards
-- [ ] Trading between players
-- [ ] Different game modes
-- [ ] Mobile-optimized UI
-
-## License
-
-This project is created for educational purposes.
-
-## Credits
-
-- **Game Framework**: Node.js + Socket.io + Express
-- **Characters**: Project Sekai Colorful Stage!
-- **Language**: Thai (Thai language support)
-- **Font**: Google Fonts (Kanit)
-
-## Support
-
-For issues, check:
-1. **Browser Console** (F12 → Console)
-2. **Server Terminal** (npm start output)
-3. **GAME_RULES.md** (detailed rules)
-4. **IMPLEMENTATION.md** (technical details)
+- **Game Design**: Inspired by Project Sekai gameplay
+- **Characters & IP**: SEGA × Colorful Palette
+- **Technology**: Node.js, Express, Socket.io
+- **UI/UX**: Custom CSS with glassmorphic design
 
 ---
 
-**Version**: 1.0.0 Beta ✅
+**Version**: 1.0.0 ✅
 **Status**: Playable & Stable
-**Last Updated**: November 2024
+**Last Updated**: December 2024
 
-Enjoy the game! 🎮✨
-
-**Team**: Made with ❤️ for Sekai fans
+**Enjoy the game! 🎮✨**
