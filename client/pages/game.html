@@ -295,9 +295,26 @@
 
     #globalMenuContainer {
       position: fixed;
-      top: 20px;
+      top: 110px;
       left: 20px;
+      z-index: 200;
+    }
+
+    @media (max-width: 640px) {
+      #globalMenuContainer {
+        top: 200px !important;
+      }
+    }
+
+    #globalMenuContainer.lobby-mode {
+      top: 20px;
       z-index: 140;
+    }
+
+    @media (max-width: 640px) {
+      #globalMenuContainer.lobby-mode {
+        top: 20px !important;
+      }
     }
 
     .global-menu-btn {
@@ -317,6 +334,8 @@
       transition: all 0.25s ease;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.15);
+      pointer-events: auto;
+      z-index: 201;
     }
 
     .global-menu-btn:hover {
@@ -327,6 +346,82 @@
 
     .global-menu-btn.menu-open {
       background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Popup Menu Styles */
+    .global-menu-popup {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      background: rgba(0, 0, 0, 0.9);
+      border: none;
+      border-radius: 12px;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 210;
+      min-width: 160px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      animation: popupSlideDown 0.25s ease-out;
+    }
+
+    .global-menu-popup.show {
+      display: flex;
+    }
+
+    @keyframes popupSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .popup-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      border: 2px solid #00d2ff;
+      border-radius: 8px;
+      color: #00d2ff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Kanit', sans-serif;
+      white-space: nowrap;
+    }
+
+    .popup-menu-item:nth-child(2) {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      border-color: #ff6b6b;
+      color: #ff6b6b;
+    }
+
+    .popup-menu-item:nth-child(3) {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      border-color: #bb86fc;
+      color: #bb86fc;
+    }
+
+    .popup-menu-item:hover {
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .popup-menu-item:nth-child(2):hover {
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+    }
+
+    .popup-menu-item:nth-child(3):hover {
+      box-shadow: 0 0 20px rgba(187, 134, 252, 0.5);
     }
 
     /* Side Menu Panel */
@@ -771,6 +866,7 @@
       text-align: center;
       position: relative;
       z-index: 150;
+      pointer-events: auto;
     }
 
     .table-event-item {
@@ -831,6 +927,24 @@
       padding: 20px 20px 130px 20px;
       box-sizing: border-box;
       overflow-y: auto;
+      pointer-events: auto;
+    }
+
+    /* ✅ Allow clicks through to event/competition when not directly over cards */
+    #playCardPhase > * {
+      pointer-events: auto;
+    }
+
+    /* ✅ Exclude button area from overlay */
+    #playCardPhase::before {
+      content: '';
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 150px;
+      z-index: -1;
+      pointer-events: none;
     }
 
     #playCardPhase.show {
@@ -894,6 +1008,7 @@
       justify-content: flex-start;
     }
 
+
     .hand {
       display: flex;
       gap: 0;
@@ -908,10 +1023,16 @@
 
     /* ✅ Cards in phaseHandContainer - no overlap, can scroll */
     #phaseHandContainer {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      gap: 10px !important;
       overflow-x: auto !important;
       overflow-y: hidden !important;
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* IE and Edge */
+      scroll-behavior: smooth;
+      touch-action: pan-x;
+      -webkit-overflow-scrolling: touch;
     }
     
     #phaseHandContainer::-webkit-scrollbar {
@@ -920,6 +1041,9 @@
     
     #phaseHandContainer .card {
       margin-left: 0 !important;
+      flex-shrink: 0;
+      min-width: 110px;
+      width: 110px;
     }
 
     .card {
@@ -1402,16 +1526,28 @@
     }
 
     @media (max-width: 640px) {
-      .action-buttons {
-        grid-template-columns: 1fr;
+      #actionPhase {
+        padding: 16px;
+        align-items: flex-start;
       }
 
-      .timer {
-        font-size: 1.5rem;
+      .action-modal {
+        width: 100%;
+        border-radius: 24px;
+        padding: 22px 18px 32px;
+        box-shadow: 0 22px 60px rgba(3, 10, 40, 0.6);
+      }
+
+      .action-header {
+        text-align: left;
+      }
+
+      .action-title {
+        font-size: clamp(1.6rem, 6vw, 2.2rem);
       }
 
       .action-countdown {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         padding: 8px 14px;
         gap: 8px;
       }
@@ -1420,16 +1556,60 @@
         font-size: 1.2rem;
       }
 
-      .action-modal {
-        padding: clamp(16px, 4vw, 32px);
-      }
-
-      .action-title {
-        font-size: 1.5rem;
+      .action-meta-grid {
+        grid-template-columns: 1fr;
       }
 
       .action-chip {
-        flex: 1 1 calc(50% - 6px);
+        padding: 14px 16px;
+      }
+
+      .action-helper-text {
+        font-size: 0.9rem;
+      }
+
+      .action-buttons {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .action-btn {
+        padding: 18px;
+        border-radius: 22px;
+      }
+
+      .action-btn__title {
+        font-size: 1.1rem;
+      }
+
+      .action-btn__number {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+      }
+
+      .action-description {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .action-modal {
+        padding: 18px 14px 26px;
+        border-radius: 20px;
+      }
+
+      .action-countdown {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .action-btn {
+        padding: 16px;
+      }
+
+      .action-btn__title {
+        flex-wrap: wrap;
       }
     }
 
@@ -1611,6 +1791,16 @@
       .event-card-description {
         font-size: 0.9rem;
       }
+
+      .table-event-item {
+        font-size: 0.9rem !important;
+        margin: 5px 0 !important;
+      }
+
+      .table-competition-item {
+        font-size: 0.85rem !important;
+        margin: 5px 0 !important;
+      }
     }
 
     /* Result Overlay */
@@ -1724,6 +1914,44 @@
       color: #ffd700;
       font-weight: 700;
       text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    @media (max-width: 600px) {
+      .result-wrapper {
+        padding: 0 12px 40px;
+        gap: 20px;
+      }
+
+      .players-score-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .player-score-box {
+        width: 100%;
+        max-width: 360px;
+        padding: 20px;
+        border-width: 2px;
+        box-shadow: 0 6px 20px rgba(0, 210, 255, 0.3);
+      }
+
+      .player-score-name {
+        font-size: 1.4rem;
+      }
+
+      .player-score-hearts {
+        font-size: 1.8rem;
+      }
+
+      .player-score-points {
+        font-size: 1.8rem;
+      }
+
+      .winner-announcement {
+        width: 100%;
+        max-width: 360px;
+        padding: 20px;
+      }
     }
 
     /* ============== TURN WINNER ANNOUNCEMENT ============== */
@@ -1916,6 +2144,8 @@
       body {
         height: auto;
         overflow: auto;
+        font-size: 16px;
+        line-height: 1.4;
       }
 
       #lobbyContainer {
@@ -1934,9 +2164,16 @@
         font-size: 2rem;
       }
 
+      .game-table {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px 10px 140px;
+      }
+
       .table-wrapper {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
         gap: 15px;
         max-width: 100%;
         height: auto;
@@ -1965,10 +2202,13 @@
       .table-center {
         grid-column: 1;
         grid-row: 4;
-      }
-
-      .game-table {
+        width: 100%;
+        max-width: 480px;
         padding: 10px;
+        margin: 0 auto;
+        background: rgba(0, 0, 0, 0.5) !important;
+        border: 2px solid #ffd700 !important;
+        border-radius: 12px !important;
       }
 
       #header {
@@ -1983,17 +2223,82 @@
         padding: 10px;
       }
 
-      .hand {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 8px;
-        max-height: 200px;
-        overflow-y: auto;
+      .player-area {
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
       }
 
-      .card {
-        width: 80px;
-        height: 110px;
-        font-size: 0.7rem;
+      .player-played-cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+      }
+
+      .board-grid,
+      .table-board-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+      }
+
+      .board-grid .card-slot,
+      .table-board-grid .card-slot {
+        min-height: 90px;
+      }
+
+      .player-area .card,
+      .player-small-card {
+        width: 100%;
+        min-width: 0;
+        max-width: 110px;
+        height: 140px;
+        font-size: 0.85rem;
+      }
+
+      .hand,
+      #phaseHandContainer {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        gap: 8px !important;
+        padding: 10px 10px 12px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        margin: 8px auto !important;
+        min-height: 155px !important;
+      }
+
+      .hand::-webkit-scrollbar,
+      #phaseHandContainer::-webkit-scrollbar {
+        display: none;
+      }
+
+      .hand .card,
+      #phaseHandContainer .card {
+        flex: 0 0 95px;
+        height: 140px;
+        font-size: 0.8rem;
+        min-width: 95px;
+      }
+
+      #hand {
+        position: fixed;
+        left: 0;
+        transform: none;
+        max-width: 100% !important;
+      }
+
+      #phaseHandContainer {
+        max-height: none;
+        height: auto;
       }
 
       .phase-title {
@@ -2001,13 +2306,26 @@
       }
 
       .action-buttons {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        grid-template-columns: 1fr;
+        gap: 16px;
       }
 
       .action-btn {
-        padding: 10px;
-        font-size: 0.8rem;
+        padding: 18px;
+        font-size: 1rem;
+        min-height: 48px;
+      }
+
+      .action-btn__number {
+        width: 48px;
+        height: 48px;
+        font-size: 1rem;
+      }
+
+      .action-description,
+      .action-btn__title,
+      .action-text {
+        font-size: 1rem;
       }
 
       .result-content {
@@ -2015,9 +2333,75 @@
         width: 90%;
       }
 
-      .btn {
-        padding: 12px 20px;
-        font-size: 0.9rem;
+      .btn,
+      .button-group button,
+      .action-reopen-btn,
+      .card-hand-reopen-btn {
+        padding: 14px 24px;
+        font-size: 1rem;
+        min-height: 48px;
+      }
+
+      .button-group {
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px !important;
+        bottom: 12px !important;
+      }
+
+      .btn-confirm,
+      .btn-skip {
+        padding: 12px 20px !important;
+        font-size: 0.95rem !important;
+        min-height: 44px !important;
+      }
+
+      .cardPreviewArea {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .cardPreview,
+      .cardPreviewStats {
+        width: 100%;
+        max-width: 100%;
+        min-height: 260px;
+      }
+
+      #playCardPhase {
+        padding: 55px 8px 140px 8px;
+        max-height: 100vh;
+        overflow-y: auto;
+      }
+
+      .playCardHeader {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+      }
+
+      .cardPreviewArea {
+        flex-direction: column !important;
+        gap: 12px !important;
+        margin-bottom: 12px !important;
+        align-items: center !important;
+      }
+
+      .cardPreview {
+        width: 170px !important;
+        height: 250px !important;
+        border: 3px solid #00d2ff !important;
+        border-radius: 15px !important;
+        padding: 0 !important;
+      }
+
+      .cardPreviewStats {
+        max-width: 100% !important;
+        min-width: 170px !important;
+        height: auto !important;
+        padding: 10px !important;
+        gap: 6px !important;
+        font-size: 0.75rem !important;
+        line-height: 1.2 !important;
       }
     }
 
@@ -2134,6 +2518,21 @@
   </div>
   <div id="globalMenuContainer">
     <button id="globalMenuButton" class="global-menu-btn" type="button" aria-haspopup="true" aria-expanded="false">☰</button>
+    <!-- Popup Menu for Game -->
+    <div id="globalMenuPopup" class="global-menu-popup">
+      <button class="popup-menu-item" id="gameRuleBtn" data-i18n="gameRule">
+        <span class="popup-icon">📖</span>
+        <span class="popup-text">GAME RULE</span>
+      </button>
+      <button class="popup-menu-item" id="cheatSheetBtn" data-i18n="cheatSheet">
+        <span class="popup-icon">⚡</span>
+        <span class="popup-text">CHEAT SHEET</span>
+      </button>
+      <button class="popup-menu-item" id="eventGuideBtn" data-i18n="eventGuide">
+        <span class="popup-icon">📋</span>
+        <span class="popup-text">EVENT GUIDE</span>
+      </button>
+    </div>
   </div>
 
   <!-- Side Menu Panel -->
@@ -2250,7 +2649,6 @@
       </div>
     </div>
 
-    <!-- ✅ My Hand Cards - Always Visible (UNO Style) -->
     <div class="hand" id="hand" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: nowrap; gap: 0; z-index: 80; max-width: 90%;"></div>
 
     <!-- ✅ Events Cheat Sheet Modal -->
@@ -2267,7 +2665,7 @@
     </div>
 
     <!-- ✅ Card Detail Preview (Left Side) -->
-    <div id="cardDetailPreview" style="position: fixed; left: 20px; top: 50%; transform: translateY(-50%); width: 200px; height: 280px; background: rgba(0,0,0,0.9); border: 3px solid #00d2ff; border-radius: 15px; padding: 15px; display: none; z-index: 85; box-shadow: 0 0 30px rgba(0,210,255,0.5);">
+    <div id="cardDetailPreview" style="position: fixed; left: 10px; top: 80px; width: 160px; height: 220px; background: rgba(0,0,0,0.9); border: 2px solid #00d2ff; border-radius: 10px; padding: 8px; display: none; z-index: 85; box-shadow: 0 0 20px rgba(0,210,255,0.4); overflow-y: auto;">
       <div id="previewCardImage" style="width: 100%; height: 180px; background-size: cover; background-position: center; border-radius: 10px; margin-bottom: 10px;"></div>
       <div id="previewCardInfo" style="color: #00ff88; font-size: 0.9rem; line-height: 1.4;"></div>
     </div>
@@ -2284,8 +2682,8 @@
       </div>
 
       <!-- ✅ Hand Cards Area (กรอบด้านล่าง - แสดงการ์ดทั้งหมด พร้อมเลื่อนได้) -->
-      <div class="hand" id="phaseHandContainer" style="margin: 20px auto; max-width: 95%; max-height: 400px; padding: 20px; background: rgba(0, 0, 0, 0.5); border: 2px solid #00d2ff; border-radius: 15px; display: flex; justify-content: flex-start; gap: 10px; flex-wrap: nowrap; min-height: 180px; overflow-x: auto; overflow-y: hidden;">
-        <div style="color: #888; font-size: 1.1rem;" id="cardsAppearMsg">การ์ดของคุณจะปรากฏที่นี่...</div>
+      <div class="hand" id="phaseHandContainer" style="margin: 8px auto; max-width: 95%; padding: 10px 12px; background: rgba(0, 0, 0, 0.5); border: 2px solid #00d2ff; border-radius: 12px; display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap; min-height: 155px; overflow-x: auto !important; overflow-y: hidden !important; scroll-behavior: smooth; touch-action: pan-x; -webkit-overflow-scrolling: touch;">
+        <div style="color: #888; font-size: 1rem;" id="cardsAppearMsg">การ์ดของคุณจะปรากฏที่นี่...</div>
       </div>
       
       <div class="button-group" style="margin-top: 20px;">
@@ -2608,6 +3006,9 @@
       if (menuInfoPanel && menuInfoPanel.classList.contains('show') && activeMenuInfoTopic) {
         setMenuInfoContent(activeMenuInfoTopic);
       }
+      
+      // Repopulate events grid with new language
+      populateEventsModal();
     }
 
     function changeLanguage(lang) {
@@ -2632,28 +3033,30 @@
 
     let _countdownInterval = null;
     let _joinMode = false;
+    let overlayLockUntil = 0; // Prevent overlay content from being replaced too soon
+    let overlayLockReleaseTimer = null;
 
     // Events Data - 19 Events Cheat Sheet
     const EVENTS_DATA = [
-      {id: 1, name: "ไม่มีอะไร", description: "ไม่มีอะไรเกิดขึ้นเลย เล่นปกติ"},
-      {id: 2, name: "Magical Mirai", description: "การ์ดสมาชิก VS คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 3, name: "งานโรงเรียน", description: "การ์ดสมาชิก LN คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 4, name: "เวทีไอดอล", description: "การ์ดสมาชิก MMJ คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 5, name: "Vivid Street", description: "การ์ดสมาชิก VBS คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 6, name: "Phoenix land", description: "การ์ดสมาชิก WxS คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 7, name: "โซเซียลไวรัส", description: "การ์ดสมาชิก Niko คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 8, name: "Festival", description: "การ์ดระดับลิมิต/เฟส คะแนนเพิ่มขึ้น 10 คะแนน"},
-      {id: 9, name: "ของขวัญจาก Mikudayo", description: "ผู้เล่นสุ่มกาชาคนละ 3 ใบ"},
-      {id: 10, name: "NeneRobo คลั่ง", description: "ค่าพลังที่เยอะที่สุดของการ์ดนั้น จะถูกลบไป"},
-      {id: 11, name: "มูฟวี่ฉายแล้ว!", description: "ด้วยพลังของมิกุจากหนังผู้เล่นฟื้นฟูพลังใจ 1 หน่วย"},
-      {id: 12, name: "SapphireR", description: "Kohane คะแนนเพิ่มขึ้น 30 คะแนน"},
-      {id: 13, name: "มิกุVBSเข้าครัว", description: "ลบค่าพลังทุกอย่างลงอย่างละ 2 หน่วย"},
-      {id: 14, name: "รายการปริศนา!?", description: "ไม่สุ่มการแข่งขัน แข่งรูปแบบพิเศษ ค่าพลังที่+กัน ไม่มีตัวคูณ"},
-      {id: 15, name: "โหนเซไก", description: "หงายการ์ดในเทิร์นนั้น"},
-      {id: 16, name: "กุ้ง", description: "ค่าพลังใจของผู้เล่น -1"},
-      {id: 17, name: "Type love บัฟ", description: "Type love คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 18, name: "Type hope บัฟ", description: "Type hope คะแนนเพิ่มขึ้น 5 คะแนน"},
-      {id: 19, name: "Type happy บัฟ", description: "Type happy คะแนนเพิ่มขึ้น 5 คะแนน"}
+      {id: 1, name: {en: "Nothing", ja: "何もない", th: "ไม่มีอะไร"}, description: {en: "No effect, play normally", ja: "効果なし、通常プレイ", th: "ไม่มีอะไรเกิดขึ้นเลย เล่นปกติ"}},
+      {id: 2, name: {en: "Magical Mirai", ja: "Magical Mirai", th: "Magical Mirai"}, description: {en: "VS member cards get +5 points", ja: "VS メンバーカードは +5 ポイント", th: "การ์ดสมาชิก VS คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 3, name: {en: "School Trip", ja: "学校旅行", th: "งานโรงเรียน"}, description: {en: "LN member cards get +5 points", ja: "LN メンバーカードは +5 ポイント", th: "การ์ดสมาชิก LN คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 4, name: {en: "Idol Stage", ja: "アイドルステージ", th: "เวทีไอดอล"}, description: {en: "MMJ member cards get +5 points", ja: "MMJ メンバーカードは +5 ポイント", th: "การ์ดสมาชิก MMJ คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 5, name: {en: "Vivid Street", ja: "Vivid Street", th: "Vivid Street"}, description: {en: "VBS member cards get +5 points", ja: "VBS メンバーカードは +5 ポイント", th: "การ์ดสมาชิก VBS คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 6, name: {en: "Phoenix Land", ja: "Phoenix Land", th: "Phoenix land"}, description: {en: "WxS member cards get +5 points", ja: "WxS メンバーカードは +5 ポイント", th: "การ์ดสมาชิก WxS คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 7, name: {en: "Social Viral", ja: "ソーシャルバイラル", th: "โซเซียลไวรัส"}, description: {en: "Niko member cards get +5 points", ja: "Niko メンバーカードは +5 ポイント", th: "การ์ดสมาชิก Niko คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 8, name: {en: "Festival", ja: "フェスティバル", th: "Festival"}, description: {en: "Limited/Festival rarity cards get +10 points", ja: "リミテッド/フェス レアリティカードは +10 ポイント", th: "การ์ดระดับลิมิต/เฟส คะแนนเพิ่มขึ้น 10 คะแนน"}},
+      {id: 9, name: {en: "Gift from Mikudayo", ja: "ミクダヨーからのギフト", th: "ของขวัญจาก Mikudayo"}, description: {en: "All players draw 3 cards", ja: "全プレイヤーが3枚カードを引く", th: "ผู้เล่นสุ่มกาชาคนละ 3 ใบ"}},
+      {id: 10, name: {en: "NeneRobo Frenzy", ja: "ネネロボ暴走", th: "NeneRobo คลั่ง"}, description: {en: "The highest stat of a card is deleted", ja: "カードの最高ステータスが削除される", th: "ค่าพลังที่เยอะที่สุดของการ์ดนั้น จะถูกลบไป"}},
+      {id: 11, name: {en: "Movie Premiere!", ja: "映画公開！", th: "มูฟวี่ฉายแล้ว!"}, description: {en: "Players recover 1 HP through Miku's power", ja: "プレイヤーはミクの力で 1 HP 回復", th: "ด้วยพลังของมิกุจากหนังผู้เล่นฟื้นฟูพลังใจ 1 หน่วย"}},
+      {id: 12, name: {en: "SapphireR", ja: "SapphireR", th: "SapphireR"}, description: {en: "Kohane gets +30 points", ja: "更衣は +30 ポイント", th: "Kohane คะแนนเพิ่มขึ้น 30 คะแนน"}},
+      {id: 13, name: {en: "Miku VBS in Kitchen", ja: "Miku VBS キッチン", th: "มิกุVBSเข้าครัว"}, description: {en: "All card stats reduced by 2", ja: "全カードステータスが 2 減少", th: "ลบค่าพลังทุกอย่างลงอย่างละ 2 หน่วย"}},
+      {id: 14, name: {en: "Mystery Show!?", ja: "ミステリー番組!?", th: "รายการปริศนา!?"}, description: {en: "Special battle mode, power values add up, no multiplier", ja: "特別バトルモード、パワー値は加算、倍率なし", th: "ไม่สุ่มการแข่งขัน แข่งรูปแบบพิเศษ ค่าพลังที่+กัน ไม่มีตัวคูณ"}},
+      {id: 15, name: {en: "Card Reveal", ja: "セカイが開いた！", th: "โหนเซไก"}, description: {en: "Cards in this turn are revealed", ja: "このターンのカードが公開される", th: "หงายการ์ดในเทิร์นนั้น"}},
+      {id: 16, name: {en: "Shrimp Curse", ja: "エビの呪い", th: "กุ้ง"}, description: {en: "Player loses 1 HP", ja: "プレイヤーは 1 HP を失う", th: "ค่าพลังใจของผู้เล่น -1"}},
+      {id: 17, name: {en: "Love Type Buff", ja: "ラブタイプバフ", th: "Type love บัฟ"}, description: {en: "Love type cards get +5 points", ja: "愛タイプカードは +5 ポイント", th: "Type love คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 18, name: {en: "Hope Type Buff", ja: "ホープタイプバフ", th: "Type hope บัฟ"}, description: {en: "Hope type cards get +5 points", ja: "希望タイプカードは +5 ポイント", th: "Type hope คะแนนเพิ่มขึ้น 5 คะแนน"}},
+      {id: 19, name: {en: "Happy Type Buff", ja: "ハッピータイプバフ", th: "Type happy บัฟ"}, description: {en: "Happy type cards get +5 points", ja: "幸福タイプカードは +5 ポイント", th: "Type happy คะแนนเพิ่มขึ้น 5 คะแนน"}}
     ];
 
     const PHASE_TIMERS = {
@@ -2727,13 +3130,19 @@
       const eventsGrid = document.getElementById('eventsGrid');
       if (!eventsGrid) return;
       
-      eventsGrid.innerHTML = EVENTS_DATA.map(event => `
+      eventsGrid.innerHTML = EVENTS_DATA.map(event => {
+        const lang = currentLang === 'ja' ? 'ja' : currentLang === 'en' ? 'en' : 'th';
+        const name = typeof event.name === 'string' ? event.name : event.name[lang] || event.name.th;
+        const description = typeof event.description === 'string' ? event.description : event.description[lang] || event.description.th;
+        
+        return `
         <div class="event-card">
           <div class="event-card-number">#${event.id}</div>
-          <div class="event-card-name">${event.name}</div>
-          <div class="event-card-description">${event.description}</div>
+          <div class="event-card-name">${name}</div>
+          <div class="event-card-description">${description}</div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function showEventsModal() {
@@ -2957,6 +3366,7 @@
     // ==================== GLOBAL MENU ====================
     const globalMenuContainer = document.getElementById('globalMenuContainer');
     const globalMenuButton = document.getElementById('globalMenuButton');
+    const globalMenuPopup = document.getElementById('globalMenuPopup');
     const sideMenuPanel = document.getElementById('sideMenuPanel');
     const menuOverlay = document.getElementById('menuOverlay');
     const sideMenuClose = document.getElementById('sideMenuClose');
@@ -2964,20 +3374,40 @@
     const menuInfoBody = document.getElementById('menuInfoBody');
     const menuInfoClose = document.getElementById('menuInfoClose');
     const menuItems = document.querySelectorAll('.side-menu-item');
+    const gameRuleBtn = document.getElementById('gameRuleBtn');
+    const cheatSheetBtn = document.getElementById('cheatSheetBtn');
+    const eventGuideBtn = document.getElementById('eventGuideBtn');
     let activeMenuInfoTopic = null;
+
+    function togglePopupMenu(forceState = null) {
+      if (!globalMenuPopup) return;
+      const shouldOpen = forceState !== null ? forceState : !globalMenuPopup.classList.contains('show');
+      if (shouldOpen) {
+        globalMenuPopup.classList.add('show');
+        globalMenuButton.classList.add('menu-open');
+      } else {
+        globalMenuPopup.classList.remove('show');
+        globalMenuButton.classList.remove('menu-open');
+      }
+    }
 
     function toggleSideMenu(forceState = null) {
       if (!sideMenuPanel || !menuOverlay) return;
+      togglePopupMenu(false);
       const shouldOpen = forceState !== null ? forceState : !sideMenuPanel.classList.contains('show');
       if (shouldOpen) {
         sideMenuPanel.classList.add('show');
         menuOverlay.classList.add('show');
         globalMenuButton.classList.add('menu-open');
+        globalMenuButton.style.display = 'none';
         globalMenuButton.setAttribute('aria-expanded', 'true');
       } else {
         sideMenuPanel.classList.remove('show');
         menuOverlay.classList.remove('show');
         globalMenuButton.classList.remove('menu-open');
+        if (gameState.phase === 'lobby' || gameState.phase === 'game') {
+          globalMenuButton.style.display = 'flex';
+        }
         globalMenuButton.setAttribute('aria-expanded', 'false');
       }
     }
@@ -3021,16 +3451,41 @@
 
     function updateGlobalMenuVisibility() {
       if (!globalMenuButton) return;
-      const shouldShow = gameState.phase === 'lobby';
+      const shouldShow = gameState.phase === 'lobby' || gameState.phase === 'game';
       globalMenuButton.style.display = shouldShow ? 'flex' : 'none';
-      if (!shouldShow) {
+      
+      // Change icon based on phase and add/remove lobby-mode class
+      if (gameState.phase === 'lobby') {
+        globalMenuButton.textContent = '☰';
+        globalMenuContainer.classList.add('lobby-mode');
+      } else if (gameState.phase === 'game') {
+        globalMenuButton.textContent = '⚙️';
+        globalMenuContainer.classList.remove('lobby-mode');
+      }
+      
+      // Close all menus if not in game/lobby
+      if (gameState.phase !== 'lobby' && gameState.phase !== 'game') {
+        togglePopupMenu(false);
         toggleSideMenu(false);
         hideMenuInfo();
       }
     }
 
     if (globalMenuButton) {
-      globalMenuButton.addEventListener('click', () => toggleSideMenu());
+      globalMenuButton.addEventListener('click', () => {
+        if (gameState.phase === 'lobby') {
+          // In lobby: toggle side menu
+          toggleSideMenu();
+        } else if (gameState.phase === 'game') {
+          // In game: toggle popup menu
+          const isPopupOpen = globalMenuPopup?.classList.contains('show');
+          if (isPopupOpen) {
+            togglePopupMenu(false);
+          } else {
+            togglePopupMenu(true);
+          }
+        }
+      });
     }
 
     if (sideMenuClose) {
@@ -3059,10 +3514,36 @@
       });
     }
 
-    // Keyboard shortcut to close menu
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && sideMenuPanel?.classList.contains('show')) {
-        toggleSideMenu(false);
+    // Popup Menu Button Handlers
+    if (gameRuleBtn) {
+      gameRuleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        togglePopupMenu(false);
+        showGameRuleModal();
+      });
+    }
+
+    if (cheatSheetBtn) {
+      cheatSheetBtn.addEventListener('click', () => {
+        togglePopupMenu(false);
+        showCheatSheetModal();
+      });
+    }
+
+    if (eventGuideBtn) {
+      eventGuideBtn.addEventListener('click', () => {
+        togglePopupMenu(false);
+        if (document.getElementById('eventsModal')) {
+          document.getElementById('eventsModal').classList.add('show');
+        }
+      });
+    }
+
+    // Close popup when clicking outside
+    document.addEventListener('click', (event) => {
+      if (globalMenuContainer && !globalMenuContainer.contains(event.target)) {
+        togglePopupMenu(false);
       }
     });
 
@@ -3284,6 +3765,19 @@
       'divine_card': '✨ Revive + 10 cards'
     };
 
+    const normalizeSkillKey = (skill = '') => skill.toLowerCase().replace(/\s+/g, '_');
+
+    function getSkillEffectDescription(skillKey) {
+      if (!skillKey) return '-';
+      const normalizedKey = normalizeSkillKey(skillKey);
+      const localeDescriptions = translations && translations.skillDescriptions;
+      if (localeDescriptions) {
+        if (localeDescriptions[normalizedKey]) return localeDescriptions[normalizedKey];
+        if (localeDescriptions[skillKey]) return localeDescriptions[skillKey];
+      }
+      return SKILL_DESCRIPTIONS[normalizedKey] || SKILL_DESCRIPTIONS[skillKey] || translateSkillName(skillKey);
+    }
+
     function createCardElement(card, isMe = true, revealed = false) {
       const div = document.createElement('div');
       div.className = 'card';
@@ -3318,8 +3812,6 @@
         showCardPreview(card);
       });
 
-      const skillDesc = SKILL_DESCRIPTIONS[card.skill] || card.skill;
-      
       // Store card data for preview
       div.dataset.cardData = JSON.stringify(card);
       
@@ -3350,6 +3842,8 @@
       // ✅ Translate skill name and character name
       const translatedSkill = translateSkillName(card.skill);
       const translatedCharacter = translateCharacterName(card.character);
+      const skillDetail = getSkillEffectDescription(card.skill);
+      const skillEffectLabel = currentLang === 'ja' ? 'スキル効果' : currentLang === 'en' ? 'Skill Effect' : 'รายละเอียดสกิล';
       
       // Show stats on right
       statsDiv.style.display = 'block';
@@ -3359,6 +3853,7 @@
         <div style="margin: 2px 0; font-size: 0.8rem;">📌 Rarity: ${card.rarity}</div>
         <div style="margin: 2px 0; font-size: 0.8rem;">👥 Group: ${card.group}</div>
         <div style="margin: 2px 0; font-size: 0.8rem; color: #00d2ff;">✨ Skill: ${translatedSkill}</div>
+        <div style="margin: 2px 0; font-size: 0.9rem; color: #f5f5f5;">🪄 ${skillEffectLabel}: <span style="color: #00ffd5;">${skillDetail}</span></div>
         <hr style="border: 1px solid #00d2ff; margin: 4px 0;">
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; text-align: center;">
           <div style="background: rgba(255, 107, 157, 0.2); padding: 8px; border-radius: 3px; font-size: 1.2rem;">🎤<br><strong style="font-size: 1.4rem;">${card.vocal}</strong></div>
@@ -3388,48 +3883,10 @@
       const actionMetaCompetition = document.getElementById('actionMetaCompetition');
       if (actionMetaCompetition) actionMetaCompetition.textContent = competitionText;
 
-      // ✅ Add GAME RULE + CHEAT SHEET buttons to top-left (only once)
+      // ✅ Game control buttons are now in the gear icon popup menu - hide the old container
       const btnContainer = document.getElementById('gameControlButtons');
-      if (btnContainer.innerHTML === '') {
-        const ruleBtn = document.createElement('button');
-        ruleBtn.textContent = '📖 GAME RULE';
-        ruleBtn.style.cssText = `
-          padding: 12px 20px; font-size: 0.95rem; font-weight: bold;
-          background: linear-gradient(135deg, #3498db, #2980b9);
-          border: 2px solid #00d2ff; color: #00d2ff; border-radius: 8px;
-          cursor: pointer; transition: all 0.3s; width: 140px;
-        `;
-        ruleBtn.onmouseover = () => ruleBtn.style.boxShadow = '0 0 20px rgba(0, 210, 255, 0.5)';
-        ruleBtn.onmouseout = () => ruleBtn.style.boxShadow = 'none';
-        ruleBtn.onclick = () => showGameRuleModal();
-        
-        const cheatBtn = document.createElement('button');
-        cheatBtn.textContent = '⚡ CHEAT SHEET';
-        cheatBtn.style.cssText = `
-          padding: 12px 20px; font-size: 0.95rem; font-weight: bold;
-          background: linear-gradient(135deg, #e74c3c, #c0392b);
-          border: 2px solid #ff6b6b; color: #ff6b6b; border-radius: 8px;
-          cursor: pointer; transition: all 0.3s; width: 140px;
-        `;
-        cheatBtn.onmouseover = () => cheatBtn.style.boxShadow = '0 0 20px rgba(255, 107, 107, 0.5)';
-        cheatBtn.onmouseout = () => cheatBtn.style.boxShadow = 'none';
-        cheatBtn.onclick = () => showCheatSheetModal();
-        
-        const eventBtn = document.createElement('button');
-        eventBtn.textContent = '📋 EVENT GUIDE';
-        eventBtn.style.cssText = `
-          padding: 12px 20px; font-size: 0.95rem; font-weight: bold;
-          background: linear-gradient(135deg, #9b59b6, #8e44ad);
-          border: 2px solid #bb86fc; color: #bb86fc; border-radius: 8px;
-          cursor: pointer; transition: all 0.3s; width: 140px;
-        `;
-        eventBtn.onmouseover = () => eventBtn.style.boxShadow = '0 0 20px rgba(187, 134, 252, 0.5)';
-        eventBtn.onmouseout = () => eventBtn.style.boxShadow = 'none';
-        eventBtn.onclick = () => showEventsModal();
-        
-        btnContainer.appendChild(ruleBtn);
-        btnContainer.appendChild(cheatBtn);
-        btnContainer.appendChild(eventBtn);
+      if (btnContainer) {
+        btnContainer.style.display = 'none';
       }
 
       // Find my position and rotate player order so I'm at bottom (p1)
@@ -3527,7 +3984,7 @@
       `;
       
       const gameRuleContent = currentLang === 'en' ? `
-        <div style="background: #1a1a2e; border: 3px solid #00d2ff; border-radius: 15px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88;">
+        <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #00d2ff; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(0, 210, 255, 0.5);">
           <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">📖 GAME RULE</div>
           
           <h3 style="color: #00d2ff; font-size: 1.2rem; margin-top: 20px;">Game Details & How to Play:</h3>
@@ -3556,11 +4013,11 @@
           <p>• Draw: Both lose at same time</p>
           
           <div style="text-align: center; margin-top: 30px;">
-            <button style="padding: 12px 30px; font-size: 1.1rem; background: #27ae60; border: 2px solid #2ecc71; color: white; border-radius: 8px; cursor: pointer;">✓ Close</button>
+            <button style="padding: 10px 24px; font-size: 1rem; background: linear-gradient(135deg, #ff6b6b, #ff8787); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.3s;">×</button>
           </div>
         </div>
       ` : currentLang === 'ja' ? `
-        <div style="background: #1a1a2e; border: 3px solid #00d2ff; border-radius: 15px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88;">
+        <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #00d2ff; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(0, 210, 255, 0.5);">
           <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">📖 ゲームルール</div>
           
           <h3 style="color: #00d2ff; font-size: 1.2rem; margin-top: 20px;">ゲーム詳細と遊び方:</h3>
@@ -3589,11 +4046,11 @@
           <p>• 同時敗北: 同時にカードまたは♥が終わる</p>
           
           <div style="text-align: center; margin-top: 30px;">
-            <button style="padding: 12px 30px; font-size: 1.1rem; background: #27ae60; border: 2px solid #2ecc71; color: white; border-radius: 8px; cursor: pointer;">✓ 閉じる</button>
+            <button style="padding: 10px 24px; font-size: 1rem; background: linear-gradient(135deg, #ff6b6b, #ff8787); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.3s;">×</button>
           </div>
         </div>
       ` : `
-        <div style="background: #1a1a2e; border: 3px solid #00d2ff; border-radius: 15px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88;">
+        <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #00d2ff; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(0, 210, 255, 0.5);">
           <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">📖 GAME RULE</div>
           
           <h3 style="color: #00d2ff; font-size: 1.2rem; margin-top: 20px;">รายละเอียดและวิธีการเล่น:</h3>
@@ -3622,7 +4079,7 @@
           <p>• เสมอ: แพ้พร้อมกัน</p>
           
           <div style="text-align: center; margin-top: 30px;">
-            <button style="padding: 12px 30px; font-size: 1.1rem; background: #27ae60; border: 2px solid #2ecc71; color: white; border-radius: 8px; cursor: pointer;">✓ ปิด</button>
+            <button style="padding: 10px 24px; font-size: 1rem; background: linear-gradient(135deg, #ff6b6b, #ff8787); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.3s;">×</button>
           </div>
         </div>
       `;
@@ -3645,7 +4102,7 @@
       `;
       
       const skillsContent = currentLang === 'en' ? `
-        <div style="background: #1a1a2e; border: 3px solid #ff6b6b; border-radius: 15px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88;">
+        <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #ff6b6b; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(255, 107, 107, 0.5);">
           <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">⚡ CHEAT SHEET - 13 SKILLS</div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -3691,11 +4148,11 @@
           </div>
           
           <div style="text-align: center; margin-top: 30px;">
-            <button style="padding: 12px 30px; font-size: 1.1rem; background: #e74c3c; border: 2px solid #ff6b6b; color: white; border-radius: 8px; cursor: pointer;">✓ Close</button>
+            <button style="padding: 10px 24px; font-size: 1rem; background: linear-gradient(135deg, #ff6b6b, #ff8787); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.3s;">×</button>
           </div>
         </div>
       ` : currentLang === 'ja' ? `
-        <div style="background: #1a1a2e; border: 3px solid #ff6b6b; border-radius: 15px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88;">
+        <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #ff6b6b; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(255, 107, 107, 0.5);">
           <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">⚡ チートシート - 13スキル</div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -3741,11 +4198,11 @@
           </div>
           
           <div style="text-align: center; margin-top: 30px;">
-            <button style="padding: 12px 30px; font-size: 1.1rem; background: #e74c3c; border: 2px solid #ff6b6b; color: white; border-radius: 8px; cursor: pointer;">✓ 閉じる</button>
+            <button style="padding: 10px 24px; font-size: 1rem; background: linear-gradient(135deg, #ff6b6b, #ff8787); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.3s;">×</button>
           </div>
         </div>
       ` : `
-        <div style="background: #1a1a2e; border: 3px solid #ff6b6b; border-radius: 15px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88;">
+        <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #ff6b6b; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(255, 107, 107, 0.5);">
           <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">⚡ CHEAT SHEET - 13 SKILLS</div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -3791,7 +4248,7 @@
           </div>
           
           <div style="text-align: center; margin-top: 30px;">
-            <button style="padding: 12px 30px; font-size: 1.1rem; background: #e74c3c; border: 2px solid #ff6b6b; color: white; border-radius: 8px; cursor: pointer;">✓ ปิด</button>
+            <button style="padding: 10px 24px; font-size: 1rem; background: linear-gradient(135deg, #ff6b6b, #ff8787); border: none; color: white; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.3s;">×</button>
           </div>
         </div>
       `;
@@ -3860,6 +4317,10 @@
         const div = document.createElement('div');
         div.className = 'card';
         div.style.marginLeft = '0';
+        div.style.flex = '0 0 110px';
+        div.style.width = '110px';
+        div.style.minWidth = '110px';
+        div.style.flexShrink = '0';
         
         const cardId = String(card.id).padStart(3, '0');
         const cardImageUrl = `/assets/images/cards/${cardId}.png`;
@@ -3879,10 +4340,13 @@
         
         div.appendChild(img);
         
-        div.onclick = () => {
+        div.addEventListener('click', (e) => {
+          // ถ้าผู้ใช้ drag scroll ไป ให้ไม่ trigger click
+          if (e.detail === 0) return;
+          
           showCardPreview(card);
           selectCardInPhase(card, div);
-        };
+        }, { capture: false });
         
         phaseContainer.appendChild(div);
       });
@@ -4497,20 +4961,53 @@
     });
 
     // ==================== TRANSLATION HELPER ====================
-    function translateEventName(thaiName) {
-      if (!thaiName) return thaiName;
+    function translateEventName(eventNameInput) {
+      if (!eventNameInput) return eventNameInput;
       
-      // For English and Japanese, try to find the key in eventsByName mapping
-      if (currentLang === 'en' || currentLang === 'ja') {
-        const eventKey = translations.eventsByName ? translations.eventsByName[thaiName] : null;
-        if (eventKey && translations.events && translations.events[eventKey]) {
-          return translations.events[eventKey];
+      // Map English names to Thai/JA names using EVENTS_DATA
+      const eventMap = {
+        "Nothing": { en: "Nothing", ja: "何もない", th: "ไม่มีอะไร" },
+        "Magical Mirai": { en: "Magical Mirai", ja: "マジカルミライ", th: "Magical Mirai" },
+        "School Trip": { en: "School Trip", ja: "修学旅行", th: "งานโรงเรียน" },
+        "Idol Stage": { en: "Idol Stage", ja: "アイドルステージ", th: "เวทีไอดอล" },
+        "Vivid Street": { en: "Vivid Street", ja: "ビビッドストリート", th: "Vivid Street" },
+        "Phoenix Land": { en: "Phoenix Land", ja: "フェニックスランド", th: "Phoenix land" },
+        "Social Viral": { en: "Social Viral", ja: "ソーシャルウイルス", th: "โซเซียลไวรัล" },
+        "Festival": { en: "Festival", ja: "フェスティバル", th: "Festival" },
+        "Gift from Mikudayo": { en: "Gift from Mikudayo", ja: "ミクダヨーからのギフト", th: "ของขวัญจาก Mikudayo" },
+        "NeneRobo Crazy": { en: "NeneRobo Crazy", ja: "ネネロボ暴走", th: "NeneRobo คลั่ง" },
+        "Movie Released!": { en: "Movie Released!", ja: "映画公開！", th: "มูฟวี่ฉายแล้ว!" },
+        "SapphireR": { en: "SapphireR", ja: "SapphireR", th: "SapphireR" },
+        "Miku VBS Cooking": { en: "Miku VBS Cooking", ja: "ミクVBS料理", th: "มิกุVBSเข้าครัว" },
+        "Mystery Show!?": { en: "Mystery Show!?", ja: "謎の番組！？", th: "รายการปริศนา!?" },
+        "Card Reveal": { en: "Card Reveal", ja: "セカイが開いた", th: "โหนเซไก" },
+        "Shrimp Curse": { en: "Shrimp Curse", ja: "エビの呪い", th: "กุ้ง" },
+        "Love Type Buff": { en: "Love Type Buff", ja: "ラブタイプバフ", th: "Type love บัฟ" },
+        "Hope Type Buff": { en: "Hope Type Buff", ja: "ホープタイプバフ", th: "Type hope บัฟ" },
+        "Happy Type Buff": { en: "Happy Type Buff", ja: "ハッピータイプバフ", th: "Type happy บัฟ" }
+      };
+      
+      // Try to find the event by English name first (from server)
+      let foundEvent = eventMap[eventNameInput];
+      
+      // If not found, try Thai name (for backward compatibility)
+      if (!foundEvent) {
+        for (const [enName, translations] of Object.entries(eventMap)) {
+          if (translations.th === eventNameInput || translations.ja === eventNameInput) {
+            foundEvent = translations;
+            break;
+          }
         }
       }
       
-      // Fallback to direct lookup in events
-      const directTranslation = translations.events ? Object.values(translations.events).find(name => name === thaiName) : null;
-      return directTranslation || thaiName;
+      if (foundEvent) {
+        if (currentLang === 'en') return foundEvent.en;
+        if (currentLang === 'ja') return foundEvent.ja;
+        if (currentLang === 'th') return foundEvent.th;
+      }
+      
+      // Fallback to original input if not found
+      return eventNameInput;
     }
     
     function translateSkillName(skillName) {
@@ -4663,7 +5160,7 @@
       "Nothing","Magical Mirai","School Trip","Idol Stage",
       "Vivid Street","Phoenix Land","Social Viral","Festival",
       "Gift from Mikudayo","NeneRobo Crazy","Movie Released!",
-      "SapphireR","Miku VBS Cooking","Mystery Show!?","Honesekai",
+      "SapphireR","Miku VBS Cooking","Mystery Show!?","Card Reveal",
       "Shrimp Curse","Love Type Buff","Hope Type Buff","Happy Type Buff"
     ];
     
@@ -4723,10 +5220,7 @@
       // Store event for later use
       gameState.currentEvent = event;
 
-      // Translate event name based on currentLang
       const translatedEventName = translateEventName(event.name);
-      
-      // Translate event description
       const translatedDescription = translateEventDescription(event.description);
 
       overlay.innerHTML = `
@@ -4735,21 +5229,39 @@
           <p style="font-size: 1.8rem; margin-top: 20px; color: #fff;">${translatedDescription}</p>
         </div>
       `;
+      overlay.style.display = 'flex';
 
-      // Update info display
       const eventInfo = document.getElementById('tableEvent');
       if (eventInfo) {
         eventInfo.textContent = `📍 ${translatedEventName}`;
       }
 
-      setTimeout(() => {
+      const EVENT_RESULT_DURATION = 4000;
+      overlayLockUntil = Date.now() + EVENT_RESULT_DURATION;
+
+      if (overlayLockReleaseTimer) {
+        clearTimeout(overlayLockReleaseTimer);
+      }
+
+      overlayLockReleaseTimer = setTimeout(() => {
         overlay.style.display = 'none';
-      }, 1000);
+        overlayLockUntil = 0;
+        overlayLockReleaseTimer = null;
+      }, EVENT_RESULT_DURATION);
     }
 
     function showCompetitionSlotMachine(duration, finalCompetition) {
       const overlay = document.getElementById('slotOverlay');
       if (!overlay) return;
+
+      const now = Date.now();
+      if (overlayLockUntil > now) {
+        const waitTime = overlayLockUntil - now;
+        setTimeout(() => {
+          showCompetitionSlotMachine(duration, finalCompetition);
+        }, waitTime);
+        return;
+      }
 
       const compNames = {
         'vocal': '🎤 VOCAL',
@@ -4857,7 +5369,6 @@
           'hope': '✨'
         };
         
-        const skillDesc = SKILL_DESCRIPTIONS[cardData.skill] || cardData.skill;
         cardEl.innerHTML = `
           <div style="position: absolute; top: 3px; left: 3px; right: 3px; font-size: 9px; font-weight: bold; background: rgba(0,0,0,0.8); padding: 2px; border-radius: 3px; text-align: center;">${cardData.character || 'Card'}</div>
           <div style="position: absolute; bottom: 3px; left: 3px; right: 3px; background: rgba(0,0,0,0.85); padding: 4px; border-radius: 4px;">
