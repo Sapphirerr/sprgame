@@ -1012,7 +1012,7 @@
     .hand {
       display: flex;
       gap: 0;
-      justify-content: flex-start;
+      justify-content: center;
       flex-wrap: nowrap;
       padding: 0;
       background: transparent;
@@ -1918,39 +1918,44 @@
 
     @media (max-width: 600px) {
       .result-wrapper {
-        padding: 0 12px 40px;
-        gap: 20px;
+        padding: 0 8px 40px;
+        gap: 12px;
+      }
+
+      .result-title {
+        font-size: 2rem;
       }
 
       .players-score-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        max-width: 100%;
       }
 
       .player-score-box {
         width: 100%;
-        max-width: 360px;
-        padding: 20px;
+        max-width: 280px;
+        padding: 14px;
         border-width: 2px;
         box-shadow: 0 6px 20px rgba(0, 210, 255, 0.3);
       }
 
       .player-score-name {
-        font-size: 1.4rem;
+        font-size: 1.1rem;
       }
 
       .player-score-hearts {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
       }
 
       .player-score-points {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
       }
 
       .winner-announcement {
         width: 100%;
-        max-width: 360px;
-        padding: 20px;
+        max-width: 280px;
+        padding: 14px;
       }
     }
 
@@ -2171,39 +2176,49 @@
       }
 
       .table-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+        gap: 10px;
         max-width: 100%;
         height: auto;
       }
 
       .player-area.p1 {
-        grid-column: 1;
-        grid-row: 5;
+        grid-column: 1 / -1;
+        grid-row: 3;
+        max-width: 100% !important;
       }
 
       .player-area.p2 {
         grid-column: 1;
         grid-row: 1;
+        max-width: 100% !important;
       }
 
       .player-area.p3 {
-        grid-column: 1;
-        grid-row: 2;
+        grid-column: 2;
+        grid-row: 1;
+        max-width: 100% !important;
       }
 
       .player-area.p4 {
         grid-column: 1;
-        grid-row: 3;
+        grid-row: 2;
+        max-width: 100% !important;
+      }
+
+      .player-area.p5 {
+        grid-column: 2;
+        grid-row: 2;
+        max-width: 100% !important;
       }
 
       .table-center {
-        grid-column: 1;
+        grid-column: 1 / -1;
         grid-row: 4;
         width: 100%;
-        max-width: 480px;
+        max-width: 100%;
         padding: 10px;
         margin: 0 auto;
         background: rgba(0, 0, 0, 0.5) !important;
@@ -2223,37 +2238,46 @@
         padding: 10px;
       }
 
+      .player-name-tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+      }
+
+      .player-hearts-display {
+        font-size: 0.9rem;
+      }
+
       .player-area {
         width: 100%;
-        max-width: 520px;
+        max-width: 100% !important;
         margin: 0 auto;
       }
 
       .player-played-cards {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
         width: 100%;
       }
 
       .board-grid,
       .table-board-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
         width: 100%;
       }
 
       .board-grid .card-slot,
       .table-board-grid .card-slot {
-        min-height: 90px;
+        min-height: 50px;
       }
 
       .player-area .card,
       .player-small-card {
         width: 100%;
         min-width: 0;
-        max-width: 110px;
+        max-width: 60px;
         height: 140px;
         font-size: 0.85rem;
       }
@@ -2291,9 +2315,10 @@
 
       #hand {
         position: fixed;
-        left: 0;
-        transform: none;
-        max-width: 100% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        max-width: 95% !important;
+        justify-content: center !important;
       }
 
       #phaseHandContainer {
@@ -5860,7 +5885,6 @@
 
     document.querySelectorAll('.action-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        // ถ้าเป็นปุ่ม 2 (Action 2) และติด CD -> ห้ามกด
         if (btn.dataset.action === "2" && gameState.actionCooldown > 0) {
           showError(currentLang === 'en' ? `Skill is on cooldown for ${gameState.actionCooldown} more turns!` : currentLang === 'ja' ? `スキルは${gameState.actionCooldown}ターン間クールダウン中です！` : `ปุ่ม Action 2 ยังติด CD ${gameState.actionCooldown} เทิร์น!`);
           return;
@@ -5874,7 +5898,6 @@
     });
   </script>
 
-  <!-- Slot Machine Overlay -->
   <div id="slotOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; justify-content: center; align-items: center;">
   </div>
 </body>
