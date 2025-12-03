@@ -290,10 +290,10 @@ io.on('connection', (socket) => {
 
       console.log(`🎲 Event: ${room.event.name} (${room.usedEvents}/${room.eventPool.length})`);
 
-      // รอ 1 วิ แล้วเริ่มสุ่มการแข่ง
+      // ✅ รอ 4 วิ แล้วเริ่มสุ่มการแข่ง (ให้ client แสดง event result 4 วิ)
       setTimeout(() => {
         startCompetitionSlot(code);
-      }, 1000);
+      }, 4000);
     }, 5000);
   };
 
@@ -925,7 +925,6 @@ io.on('connection', (socket) => {
       
       // Action 1: สุ่มกาชา - ลด 5 แต้ม
       if (action === "1") {
-        p.hand.push(room.deck.drawCard());
         actualScore = Math.max(0, score - 5); // ลด 5 แต้ม
         console.log(`  → Action 1 applied: ${score} - 5 = ${actualScore}`);
       }
