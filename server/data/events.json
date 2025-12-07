@@ -5,7 +5,7 @@
   {"id":4,"name":"เวทีไอดอล","effect":"group_buff","group":"MMJ","scoreBonus":5,"description":"การ์ดสมาชิก MMJ คะแนนเพิ่มขึ้น 5 คะแนน"},
   {"id":5,"name":"Vivid Street","effect":"group_buff","group":"VBS","scoreBonus":5,"description":"การ์ดสมาชิก VBS คะแนนเพิ่มขึ้น 5 คะแนน"},
   {"id":6,"name":"Phoenix land","effect":"group_buff","group":"WxS","scoreBonus":5,"description":"การ์ดสมาชิก WxS คะแนนเพิ่มขึ้น 5 คะแนน"},
-  {"id":7,"name":"โซเซียลไวรัล","effect":"group_buff","group":"Niko","scoreBonus":5,"description":"การ์ดสมาชิก Niko คะแนนเพิ่มขึ้น 5 คะแนน"},
+  {"id":7,"name":"โซเซียลไวรัล","effect":"group_buff","group":"Niigo","scoreBonus":5,"description":"การ์ดสมาชิก Niigo คะแนนเพิ่มขึ้น 5 คะแนน"},
   {"id":8,"name":"Festival","effect":"rarity_buff","rarity":["Limit","Fes"],"scoreBonus":10,"description":"การ์ดระดับลิมิต/เฟส คะแนนเพิ่มขึ้น 10 คะแนน"},
   {"id":9,"name":"ของขวัญจาก Mikudayo","effect":"draw_3","description":"ผู้เล่นสุ่มกาชาคนละ 3 ใบ"},
   {"id":10,"name":"NeneRobo คลั่ง","effect":"max_stat_zero","description":"ค่าพลังที่เยอะที่สุดของการ์ดนั้น จะถูกลบไป"},
