@@ -2549,9 +2549,9 @@
         <span class="popup-icon">📖</span>
         <span class="popup-text">GAME RULE</span>
       </button>
-      <button class="popup-menu-item" id="cheatSheetBtn" data-i18n="cheatSheet">
+      <button class="popup-menu-item" id="skillInfoBtn" data-i18n="skillInfo">
         <span class="popup-icon">⚡</span>
-        <span class="popup-text">CHEAT SHEET</span>
+        <span class="popup-text">Skill Info</span>
       </button>
       <button class="popup-menu-item" id="eventGuideBtn" data-i18n="eventGuide">
         <span class="popup-icon">📋</span>
@@ -2573,6 +2573,10 @@
       <button class="side-menu-item" data-action="about" data-i18n="menuAbout">
         <span class="menu-icon">ℹ️</span>
         <span class="menu-text" data-i18n="menuAbout">เกี่ยวกับเรา</span>
+      </button>
+      <button class="side-menu-item" data-action="sprInfo" data-i18n="menuSprInfo">
+        <span class="menu-icon">🧠</span>
+        <span class="menu-text" data-i18n="menuSprInfo">SPRgame Info</span>
       </button>
       <button class="side-menu-item" data-action="gameInfo" data-i18n="menuGameInfo">
         <span class="menu-icon">🎮</span>
@@ -3403,7 +3407,7 @@
     const menuInfoClose = document.getElementById('menuInfoClose');
     const menuItems = document.querySelectorAll('.side-menu-item');
     const gameRuleBtn = document.getElementById('gameRuleBtn');
-    const cheatSheetBtn = document.getElementById('cheatSheetBtn');
+    const skillInfoBtn = document.getElementById('skillInfoBtn');
     const eventGuideBtn = document.getElementById('eventGuideBtn');
     let activeMenuInfoTopic = null;
 
@@ -3442,10 +3446,14 @@
 
     function setMenuInfoContent(topic) {
       if (!menuInfoTitle || !menuInfoBody) return;
-      const titleKey = topic === 'about' ? 'menuAbout' : topic === 'gameInfo' ? 'menuGameInfo' : 'menuLabel';
-      const bodyKey = topic === 'about' ? 'menuAboutContent' : topic === 'gameInfo' ? 'menuGameInfoContent' : 'menuLabel';
-      menuInfoTitle.textContent = t(titleKey);
-      menuInfoBody.innerHTML = t(bodyKey);
+      const topicMap = {
+        about: { title: 'menuAbout', body: 'menuAboutContent' },
+        sprInfo: { title: 'menuSprInfo', body: 'menuSprInfoContent' },
+        gameInfo: { title: 'menuGameInfo', body: 'menuGameInfoContent' }
+      };
+      const { title, body } = topicMap[topic] || { title: 'menuLabel', body: 'menuLabel' };
+      menuInfoTitle.textContent = t(title);
+      menuInfoBody.innerHTML = t(body);
     }
 
     function showMenuInfo(topic) {
@@ -3468,7 +3476,7 @@
       if (action === 'home') {
         hideMenuInfo();
         navigateToHomeScreen();
-      } else if (action === 'about' || action === 'gameInfo') {
+      } else if (['about', 'sprInfo', 'gameInfo'].includes(action)) {
         showMenuInfo(action);
       }
     }
@@ -3552,10 +3560,10 @@
       });
     }
 
-    if (cheatSheetBtn) {
-      cheatSheetBtn.addEventListener('click', () => {
+    if (skillInfoBtn) {
+      skillInfoBtn.addEventListener('click', () => {
         togglePopupMenu(false);
-        showCheatSheetModal();
+        showSkillInfoModal();
       });
     }
 
@@ -4120,8 +4128,8 @@
       closeBtn.onclick = () => modal.remove();
     }
 
-    // ✅ Modal: CHEAT SHEET (Skills)
-    function showCheatSheetModal() {
+    // ✅ Modal: SKILL INFO (Skills)
+    function showSkillInfoModal() {
       const modal = document.createElement('div');
       modal.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -4131,7 +4139,7 @@
       
       const skillsContent = currentLang === 'en' ? `
         <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #ff6b6b; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(255, 107, 107, 0.5);">
-          <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">⚡ CHEAT SHEET - 13 SKILLS</div>
+          <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">⚡ Skill Info</div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div style="background: rgba(0,0,0,0.5); padding: 10px; border-left: 3px solid #00d2ff; border-radius: 5px;">
@@ -4231,7 +4239,7 @@
         </div>
       ` : `
         <div style="background: linear-gradient(145deg, rgba(5, 15, 43, 0.95), rgba(12, 34, 86, 0.9)); border: 2px solid #ff6b6b; border-radius: 20px; padding: 30px; max-width: 700px; max-height: 85vh; overflow-y: auto; color: #00ff88; box-shadow: 0 0 50px rgba(255, 107, 107, 0.5);">
-          <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">⚡ CHEAT SHEET - 13 SKILLS</div>
+          <div style="font-size: 2rem; font-weight: bold; color: #ffd700; margin-bottom: 20px; text-align: center;">⚡ Skill Info</div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div style="background: rgba(0,0,0,0.5); padding: 10px; border-left: 3px solid #00d2ff; border-radius: 5px;">
