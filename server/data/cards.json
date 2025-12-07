@@ -87,19 +87,19 @@
 {"id":"065","character":"Wizard Rui","variant":2,"rarity":"Limit","vocal":12,"dance":18,"visual":12,"type":"love","skill":"makeup shop visit","group":"WxS"},
 {"id":"066","character":"Rui's Imaginary Land","variant":3,"rarity":"Fes","vocal":19,"dance":14,"visual":11,"type":"hope","skill":"gacha god","group":"WxS"},
 
-{"id":"067","character":"Sleeping Kanade","variant":1,"rarity":"Normal","vocal":19,"dance":5,"visual":18,"type":"happy","skill":"gacha god","group":"Niko"},
-{"id":"068","character":"Kanade Valentine","variant":2,"rarity":"Limit","vocal":13,"dance":10,"visual":20,"type":"love","skill":"never give up","group":"Niko"},
-{"id":"069","character":"Kanade in Dreamland","variant":3,"rarity":"Fes","vocal":17,"dance":18,"visual":10,"type":"hope","skill":"leek shield","group":"Niko"},
+{"id":"067","character":"Sleeping Kanade","variant":1,"rarity":"Normal","vocal":19,"dance":5,"visual":18,"type":"happy","skill":"gacha god","group":"Niigo"},
+{"id":"068","character":"Kanade Valentine","variant":2,"rarity":"Limit","vocal":13,"dance":10,"visual":20,"type":"love","skill":"never give up","group":"Niigo"},
+{"id":"069","character":"Kanade in Dreamland","variant":3,"rarity":"Fes","vocal":17,"dance":18,"visual":10,"type":"hope","skill":"leek shield","group":"Niigo"},
 
-{"id":"070","character":"Mafuyu in bridge","variant":1,"rarity":"Normal","vocal":12,"dance":14,"visual":18,"type":"happy","skill":"feet of fire","group":"Niko"},
-{"id":"071","character":"Vampire Mafuyu","variant":2,"rarity":"Limit","vocal":11,"dance":15,"visual":19,"type":"love","skill":"hidden skill","group":"Niko"},
-{"id":"072","character":"Mafuyu in His Thoughts","variant":3,"rarity":"Fes","vocal":18,"dance":14,"visual":12,"type":"hope","skill":"mic power cut","group":"Niko"},
+{"id":"070","character":"Mafuyu in bridge","variant":1,"rarity":"Normal","vocal":12,"dance":14,"visual":18,"type":"happy","skill":"feet of fire","group":"Niigo"},
+{"id":"071","character":"Vampire Mafuyu","variant":2,"rarity":"Limit","vocal":11,"dance":15,"visual":19,"type":"love","skill":"hidden skill","group":"Niigo"},
+{"id":"072","character":"Mafuyu in His Thoughts","variant":3,"rarity":"Fes","vocal":18,"dance":14,"visual":12,"type":"hope","skill":"mic power cut","group":"Niigo"},
 
-{"id":"073","character":"Ena desu","variant":1,"rarity":"Normal","vocal":14,"dance":12,"visual":17,"type":"happy","skill":"freeze spell","group":"Niko"},
-{"id":"074","character":"Ena the Traveler","variant":2,"rarity":"Limit","vocal":10,"dance":19,"visual":13,"type":"love","skill":"golden microphone","group":"Niko"},
-{"id":"075","character":"Artist Ena","variant":2,"rarity":"Fes","vocal":20,"dance":13,"visual":11,"type":"happy","skill":"golden microphone","group":"Niko"},
+{"id":"073","character":"Ena desu","variant":1,"rarity":"Normal","vocal":14,"dance":12,"visual":17,"type":"happy","skill":"freeze spell","group":"Niigo"},
+{"id":"074","character":"Ena the Traveler","variant":2,"rarity":"Limit","vocal":10,"dance":19,"visual":13,"type":"love","skill":"golden microphone","group":"Niigo"},
+{"id":"075","character":"Artist Ena","variant":2,"rarity":"Fes","vocal":20,"dance":13,"visual":11,"type":"happy","skill":"golden microphone","group":"Niigo"},
 
-{"id":"076","character":"Little Cat Mizuki","variant":1,"rarity":"Normal","vocal":12,"dance":13,"visual":18,"type":"happy","skill":"hidden skill","group":"Niko"},
-{"id":"077","character":"Mizuki happy","variant":2,"rarity":"Limit","vocal":14,"dance":15,"visual":16,"type":"love","skill":"salt","group":"Niko"},
-{"id":"078","character":"Mizuki in the Bedroom","variant":3,"rarity":"Fes","vocal":20,"dance":16,"visual":7,"type":"hope","skill":"gacha god","group":"Niko"}
+{"id":"076","character":"Little Cat Mizuki","variant":1,"rarity":"Normal","vocal":12,"dance":13,"visual":18,"type":"happy","skill":"hidden skill","group":"Niigo"},
+{"id":"077","character":"Mizuki happy","variant":2,"rarity":"Limit","vocal":14,"dance":15,"visual":16,"type":"love","skill":"salt","group":"Niigo"},
+{"id":"078","character":"Mizuki in the Bedroom","variant":3,"rarity":"Fes","vocal":20,"dance":16,"visual":7,"type":"hope","skill":"gacha god","group":"Niigo"}
 ]
