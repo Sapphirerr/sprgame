@@ -40,7 +40,7 @@ const getEventModifiers = (event, card) => {
     }
   }
   
-  // Group buffs - สมาชิก VS/LN/MMJ/VBS/WxS/Niko เพิ่มคะแนนตามที่กำหนดใน event
+  // Group buffs - สมาชิก VS/LN/MMJ/VBS/WxS/Niigo เพิ่มคะแนนตามที่กำหนดใน event
   if (event.effect === 'group_buff') {
     if (card.group === event.group) {
       modifiers.groupBonus = event.scoreBonus || 5;
