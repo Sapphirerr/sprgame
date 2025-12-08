@@ -408,8 +408,23 @@ io.on('connection', (socket) => {
     const room = rooms.get(code);
     if (!room || !room.started) return;
 
-    // NOTE: divine card check moved to resolveTurn (BEFORE gameOver check)
-    // ไม่ check ที่นี่เพราะกลัว gameOver จะถูกประกาศก่อน
+    // Divine Card revival check happens at the true start of the turn
+    if (room.divineCardActive && Object.keys(room.divineCardActive).length > 0) {
+      room.players.forEach(p => {
+        const revival = SkillManager.checkDivineCardRevival(p, room, room.deck);
+        if (revival.revived) {
+          p.isDead = false;
+          console.log(`🌟 [Divine Revival] ${p.name} returns with ${revival.drewCards} new cards`);
+          const playerSocket = io.sockets.sockets.get(p.id);
+          if (playerSocket) {
+            playerSocket.emit('divineCardRevive', {
+              cards: revival.cards,
+              drew: revival.drewCards
+            });
+          }
+        }
+      });
+    }
 
     room.phase = 'playCard';
     // ❌ ไม่ต้องสุ่มใหม่ที่นี่ เพราะสุ่มไว้ใน startEventSlot และ startCompetitionSlot แล้ว
@@ -903,18 +918,19 @@ io.on('connection', (socket) => {
     });
 
     playersWithCards.forEach(p => {
-      let card = p.playedCard;
+      const card = p.playedCard;
+      const scoringCard = { ...card };
       
-      // ✅ Apply skill stat modifiers to card stats before scoring
+      // ✅ Apply skill stat modifiers to a scoring clone so deck data stays pristine
       if (statModifiers[p.id]) {
         const mods = statModifiers[p.id];
-        if (mods.vocal) card.vocal = Math.max(1, card.vocal + mods.vocal);
-        if (mods.dance) card.dance = Math.max(1, card.dance + mods.dance);
-        if (mods.visual) card.visual = Math.max(1, card.visual + mods.visual);
+        if (mods.vocal) scoringCard.vocal = Math.max(1, scoringCard.vocal + mods.vocal);
+        if (mods.dance) scoringCard.dance = Math.max(1, scoringCard.dance + mods.dance);
+        if (mods.visual) scoringCard.visual = Math.max(1, scoringCard.visual + mods.visual);
         console.log(`  📊 Stat modifiers applied: V${mods.vocal || 0}, D${mods.dance || 0}, Vi${mods.visual || 0}`);
       }
       
-      let score = calculateScore(card, room.competition, room.event);
+      let score = calculateScore(scoringCard, room.competition, room.event);
       let actualScore = score;
       let action = p.action;
       
@@ -1113,26 +1129,20 @@ io.on('connection', (socket) => {
       console.log(`💎 [Event] sapphire_r: Already applied in score calculation`);
     }
 
-    // ==================== PHASE 6: CHECK DIVINE CARD BEFORE GAME OVER ====================
-    // ✅ ตรวจสอบ divine card ชุบชีวิตก่อนประกาศแพ้
-    // เงื่อนไข: heart ต้องเหลือ 1 เท่านั้น + มี leek shield protection
-    room.players.forEach(p => {
-      if (p.heart === 1 && room.divineCardActive && room.divineCardActive[p.id] && room.protectedPlayers && room.protectedPlayers[p.id]) {
-        console.log(`✨ [Divine Card CHECK] ${p.name} can revive! (heart=1, leek shield active)`);
-        const revivalCards = room.deck.drawCards(10);
-        p.hand.push(...revivalCards);
-        console.log(`✨ [Divine Card ACTIVATED] ${p.name} revived! Drew 10 cards (leek shield keeps heart at 1)`);
-        delete room.divineCardActive[p.id];
-        // leek shield จะเก็บ heart ไว้ที่ 1 ตามไป
-      }
-    });
-
     // Clear temporary skill effects for next turn (AFTER divine card check)
     SkillManager.clearTemporaryEffects(room);
 
     // ✅ ตรวจสอบสถานะเกม: ผู้ชนะ, ผู้แพ้, การเสมอ (AFTER divine card check)
-    const alivePlayers = room.players.filter(p => p.heart > 0 && p.hand.length > 0);
-    const deadPlayers = room.players.filter(p => p.heart <= 0 || p.hand.length === 0);
+    const hasPendingDivine = (p) => room.divineCardActive && room.divineCardActive[p.id];
+    const isPlayerAlive = (p) => {
+      const pendingDivine = hasPendingDivine(p);
+      const heartOkay = p.heart > 0 || pendingDivine;
+      const hasCards = p.hand.length > 0 || pendingDivine;
+      return heartOkay && hasCards;
+    };
+
+    const alivePlayers = room.players.filter(p => isPlayerAlive(p));
+    const deadPlayers = room.players.filter(p => !isPlayerAlive(p));
     
     let gameOver = false;
     let finalWinner = null;
