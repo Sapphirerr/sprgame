@@ -18,6 +18,13 @@ class GameStateManager {
     room.lastTurnActionResults = [];
     room.playersToDraw = [];
     room.usedEvents = 0;
+    room.divineCardActive = {};
+
+    // รีเฟรชลำดับอีเวนต์ทุกครั้งที่เริ่มเกมใหม่ เพื่อไม่ให้วนชุดเดิม
+    if (room.eventPool && room.eventPool.length > 0) {
+      room.eventPool = shuffle([...room.eventPool]);
+      console.log(`[GameStateManager] Event pool reshuffled for room ${room.code}`);
+    }
 
     // รีเซ็ตสถานะผู้เล่น
     room.players.forEach(p => {
