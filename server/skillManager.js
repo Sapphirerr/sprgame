@@ -199,25 +199,32 @@ class SkillManager {
   static checkDivineCardRevival(player, gameState, deck) {
     const result = {
       revived: false,
-      drewCards: 0
+      drewCards: 0,
+      cards: [],
+      expired: false
     };
 
-    // Check if player had Divine Card skill and heart reached 0
-    if (gameState.divineCardActive && gameState.divineCardActive[player.id] && 
-        player.heart === 0) {
-      
-      // Revive with 1 heart
+    const hasPendingDivine = gameState.divineCardActive && gameState.divineCardActive[player.id];
+    if (!hasPendingDivine) {
+      return result;
+    }
+
+    // Consume the flag regardless of outcome (effect lasts 1 turn)
+    delete gameState.divineCardActive[player.id];
+
+    if (player.heart === 0) {
       player.heart = 1;
-      
-      // Draw 10 cards
-      if (deck && deck.drawCards) {
+      if (deck && typeof deck.drawCards === 'function') {
         const cards = deck.drawCards(10);
         player.hand.push(...cards);
         result.drewCards = cards.length;
+        result.cards = cards;
       }
-      
       result.revived = true;
       console.log(`✨ ${player.name} revived by Divine Card! Heart: 0 → 1, Drew ${result.drewCards} cards`);
+    } else {
+      result.expired = true;
+      console.log(`⚠️ ${player.name}'s Divine Card expired (heart = ${player.heart})`);
     }
 
     return result;
