@@ -49,7 +49,10 @@ class RoomManager {
       usedEvents: 0,
       playedCards: {},
       lastTurnActionResults: [],
-      playersToDraw: []
+      playersToDraw: [],
+      hostPlayerId: playerId,
+      hostSocketId: null,
+      botCounter: 0
     });
 
     console.log(`[RoomManager] Room ${code} created by ${name} (playerId: ${playerId})`);
@@ -117,6 +120,91 @@ class RoomManager {
     return { room, player: newPlayer, isRejoin: false };
   }
 
+  setHostSocket(code, socketId) {
+    const room = this.rooms.get(code);
+    if (!room) return;
+    room.hostSocketId = socketId;
+  }
+
+  isHost(code, socketId) {
+    const room = this.rooms.get(code);
+    if (!room) return false;
+    return room.hostSocketId === socketId;
+  }
+
+  addBot(code) {
+    const room = this.rooms.get(code);
+    if (!room) return { error: 'ไม่พบห้องนี้' };
+    if (room.started) return { error: 'ไม่สามารถเพิ่มบอทระหว่างเกมได้' };
+    if (room.players.length >= 5) return { error: 'ห้องเต็มแล้ว' };
+
+    const existingBots = room.players.filter(p => p.isBot);
+    if (existingBots.length >= 4) return { error: 'บอทครบ 4 ตัวแล้ว' };
+
+    const usedSlots = existingBots.map(bot => bot.botSlot).filter(Boolean);
+    let slot = 1;
+    while (usedSlots.includes(slot) && slot <= 4) {
+      slot++;
+    }
+
+    const botPlayerId = `bot_${Date.now()}_${Math.random()}`;
+    const bot = {
+      playerId: botPlayerId,
+      id: null,
+      name: `Bot ${slot}`,
+      heart: 6,
+      hand: [],
+      ready: true,
+      skillCooldown: 0,
+      actionCooldown: 0,
+      playedCard: null,
+      action: null,
+      hasDecided: false,
+      isDead: false,
+      isBot: true,
+      botSlot: slot
+    };
+
+    room.players.push(bot);
+    room.botCounter++;
+    console.log(`[RoomManager] Added bot (slot ${slot}) to room ${code}`);
+    return { room, bot };
+  }
+
+  removeBot(code, botPlayerId) {
+    const room = this.rooms.get(code);
+    if (!room) return { error: 'ไม่พบห้องนี้' };
+    if (room.started) return { error: 'ไม่สามารถลบบอทระหว่างเกมได้' };
+
+    const index = room.players.findIndex(p => p.playerId === botPlayerId && p.isBot);
+    if (index === -1) {
+      return { error: 'ไม่พบบอทนี้ในห้อง' };
+    }
+
+    const [bot] = room.players.splice(index, 1);
+    console.log(`[RoomManager] Removed bot ${bot.name} from room ${code}`);
+    return { room, bot };
+  }
+
+  kickPlayer(code, targetPlayerId) {
+    const room = this.rooms.get(code);
+    if (!room) return { error: 'ไม่พบห้องนี้' };
+    if (room.started) return { error: 'ไม่สามารถเตะผู้เล่นระหว่างเกมได้' };
+
+    if (targetPlayerId === room.hostPlayerId) {
+      return { error: 'ไม่สามารถเตะโฮสต์ได้' };
+    }
+
+    const index = room.players.findIndex(p => p.playerId === targetPlayerId && !p.isBot);
+    if (index === -1) {
+      return { error: 'ไม่พบผู้เล่นนี้' };
+    }
+
+    const [removedPlayer] = room.players.splice(index, 1);
+    console.log(`[RoomManager] Host kicked ${removedPlayer.name} from room ${code}`);
+    return { room, removedPlayer };
+  }
+
   /**
    * ดึงห้อง
    * @param {string} code - โค้ดห้อง
@@ -170,11 +258,13 @@ class RoomManager {
 
     return room.players.map(p => ({
       id: p.id,
+      playerId: p.playerId,
       name: p.name,
       heart: p.heart,
       handCount: p.hand.length,
       skillCooldown: p.skillCooldown,
-      ready: p.ready
+      ready: p.ready,
+      isBot: !!p.isBot
     }));
   }
 
@@ -205,6 +295,18 @@ class RoomManager {
         if (room.players.length === 0) {
           this.deleteRoom(code);
           return { code, room: null, removedPlayer };
+        }
+
+        if (removedPlayer.playerId === room.hostPlayerId) {
+          const newHost = room.players.find(p => !p.isBot) || room.players[0];
+          if (newHost) {
+            room.hostPlayerId = newHost.playerId;
+            room.hostSocketId = newHost.id;
+            console.log(`[RoomManager] Host transferred to ${newHost.name} in room ${code}`);
+          } else {
+            room.hostPlayerId = null;
+            room.hostSocketId = null;
+          }
         }
 
         return { code, room, removedPlayer };
@@ -252,7 +354,7 @@ class RoomManager {
     room.players.forEach(p => {
       p.hand = [];
       p.heart = 6;
-      p.ready = false;
+      p.ready = p.isBot ? true : false;
       p.playedCard = null;
       p.action = null;
       p.skillCooldown = 0;
