@@ -36,6 +36,7 @@ class SkillManager {
       effects: [],
       statModifiers: {} // Track which players get stat bonuses/penalties
     };
+    const playerKey = player.playerId || player.id;
 
     switch (skill) {
       case 'salt':
@@ -47,7 +48,7 @@ class SkillManager {
         result.effects.push('Protected from willpower loss this turn');
         // Store in temporary protection map
         gameState.protectedPlayers = gameState.protectedPlayers || {};
-        gameState.protectedPlayers[player.id] = true;
+        gameState.protectedPlayers[playerKey] = true;
         break;
 
       case 'never give up':
@@ -60,27 +61,28 @@ class SkillManager {
 
       case 'golden microphone':
         // +5 Vocal to player's card
-        result.statModifiers[player.id] = { vocal: 5 };
+        result.statModifiers[playerKey] = { vocal: 5 };
         result.effects.push('+5 Vocal bonus applied');
         break;
 
       case 'feet of fire':
         // +5 Dance to player's card
-        result.statModifiers[player.id] = { dance: 5 };
+        result.statModifiers[playerKey] = { dance: 5 };
         result.effects.push('+5 Dance bonus applied');
         break;
 
       case 'makeup shop visit':
         // +5 Visual to player's card
-        result.statModifiers[player.id] = { visual: 5 };
+        result.statModifiers[playerKey] = { visual: 5 };
         result.effects.push('+5 Visual bonus applied');
         break;
 
       case 'mic power cut':
         // -5 Vocal to all OTHER players
         allPlayers.forEach(p => {
-          if (p.id !== player.id && p.playedCard) {
-            result.statModifiers[p.id] = { vocal: -5 };
+          const targetKey = p.playerId || p.id;
+          if (targetKey !== playerKey && p.playedCard) {
+            result.statModifiers[targetKey] = { vocal: -5 };
             result.effects.push(`-5 Vocal debuff to ${p.name}`);
           }
         });
@@ -89,8 +91,9 @@ class SkillManager {
       case 'freeze spell':
         // -5 Dance to all OTHER players
         allPlayers.forEach(p => {
-          if (p.id !== player.id && p.playedCard) {
-            result.statModifiers[p.id] = { dance: -5 };
+          const targetKey = p.playerId || p.id;
+          if (targetKey !== playerKey && p.playedCard) {
+            result.statModifiers[targetKey] = { dance: -5 };
             result.effects.push(`-5 Dance debuff to ${p.name}`);
           }
         });
@@ -99,8 +102,9 @@ class SkillManager {
       case 'banana slip':
         // -5 Visual to all OTHER players
         allPlayers.forEach(p => {
-          if (p.id !== player.id && p.playedCard) {
-            result.statModifiers[p.id] = { visual: -5 };
+          const targetKey = p.playerId || p.id;
+          if (targetKey !== playerKey && p.playedCard) {
+            result.statModifiers[targetKey] = { visual: -5 };
             result.effects.push(`-5 Visual debuff to ${p.name}`);
           }
         });
@@ -136,7 +140,7 @@ class SkillManager {
       case 'hidden skill':
         // Block opponent skills this turn
         gameState.skillBlockActive = gameState.skillBlockActive || {};
-        gameState.skillBlockActive[player.id] = true;
+        gameState.skillBlockActive[playerKey] = true;
         result.effects.push('Other players\' skills blocked this turn');
         break;
 
@@ -150,7 +154,7 @@ class SkillManager {
         // Special mechanic: handled in nextTurn check
         // Mark this player as having divine card active
         gameState.divineCardActive = gameState.divineCardActive || {};
-        gameState.divineCardActive[player.id] = true;
+        gameState.divineCardActive[playerKey] = true;
         result.effects.push('Divine Card: Ready to revive on next turn if heart reaches 0');
         break;
 
@@ -177,12 +181,12 @@ class SkillManager {
    * @param {string} playerId - Player attempting to use skill
    * @returns {boolean} True if skill is blocked
    */
-  static isSkillBlocked(gameState, playerId) {
+  static isSkillBlocked(gameState, playerKey) {
     if (!gameState.skillBlockActive) return false;
     
     // If the player using hidden skill is blocking, their own skills work
     for (const blockerId in gameState.skillBlockActive) {
-      if (blockerId !== playerId && gameState.skillBlockActive[blockerId]) {
+      if (blockerId !== playerKey && gameState.skillBlockActive[blockerId]) {
         return true;
       }
     }
@@ -204,13 +208,14 @@ class SkillManager {
       expired: false
     };
 
-    const hasPendingDivine = gameState.divineCardActive && gameState.divineCardActive[player.id];
+    const playerKey = player.playerId || player.id;
+    const hasPendingDivine = gameState.divineCardActive && gameState.divineCardActive[playerKey];
     if (!hasPendingDivine) {
       return result;
     }
 
     // Consume the flag regardless of outcome (effect lasts 1 turn)
-    delete gameState.divineCardActive[player.id];
+    delete gameState.divineCardActive[playerKey];
 
     if (player.heart === 0) {
       player.heart = 1;
