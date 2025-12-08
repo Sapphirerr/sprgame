@@ -173,6 +173,96 @@
 
     .r { color: #64ffda; font-weight: 700; }
 
+    .player-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bot-badge {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      margin-left: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .remove-bot {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s ease;
+    }
+
+    .remove-bot:hover {
+      background: rgba(255, 79, 216, 0.3);
+    }
+
+    .kick-player {
+      background: transparent;
+      border: 1px solid rgba(255, 107, 107, 0.45);
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .kick-player:hover {
+      background: rgba(255, 107, 107, 0.25);
+      transform: scale(1.05);
+    }
+
+    .bot-controls {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .bot-controls.hidden { display: none; }
+
+    .bot-controls-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #botStatus {
+      font-size: 1rem;
+      color: var(--text-soft);
+    }
+
+    #addBotBtn {
+      padding: 8px 18px;
+      font-size: 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 249, 255, 0.5);
+      background: rgba(56, 249, 255, 0.18);
+      color: #fff;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    #addBotBtn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
     .ambient-notes {
       position: absolute;
       inset: 0;
@@ -222,6 +312,13 @@
     <div class="code" id="code">??????</div>
     <p id="lobbyInfo">ส่งโค้ดนี้ให้เพื่อนของคุณ!</p>
     <div id="list"></div>
+    <div id="botControls" class="bot-controls hidden">
+      <div class="bot-controls-header">
+        <span id="botStatus">Bot 0/4</span>
+        <button id="addBotBtn">+ เพิ่มบอท</button>
+      </div>
+      <p id="botHint">โฮสต์สามารถเพิ่มบอทได้สูงสุด 4 ตัว</p>
+    </div>
     <button id="readyBtn">พร้อมแล้ว!</button>
     <button id="startBtn">เริ่มเกม!</button>
   </div>
@@ -235,6 +332,16 @@
     const playerId = url.get('playerId');
     let lang = url.get('lang') || localStorage.getItem('lang') || 'th';
     let texts = {};
+    let latestLobbyData = null;
+    let latestIsHost = false;
+
+    const listEl = document.getElementById('list');
+    const botControlsEl = document.getElementById('botControls');
+    const botStatusEl = document.getElementById('botStatus');
+    const botHintEl = document.getElementById('botHint');
+    const addBotBtn = document.getElementById('addBotBtn');
+    const readyBtn = document.getElementById('readyBtn');
+    const startBtn = document.getElementById('startBtn');
 
     // ==================== LOCALIZATION ====================
     async function loadLanguage(language) {
@@ -258,9 +365,17 @@
         document.getElementById('readyBtn').textContent = document.getElementById('readyBtn').classList.contains('ready') ? 'Cancel' : 'Ready!';
         document.getElementById('startBtn').textContent = 'Start Game!';
         document.getElementById('langBtn').textContent = 'ไทย';
+        if (addBotBtn) addBotBtn.textContent = '+ Add Bot';
+        if (botHintEl) botHintEl.textContent = 'Host can add up to 4 bots';
         console.log('[lobby-i18n] ✅ Lobby text updated to English');
       } else {
         document.getElementById('langBtn').textContent = 'English';
+        if (addBotBtn) addBotBtn.textContent = '+ เพิ่มบอท';
+        if (botHintEl) botHintEl.textContent = 'โฮสต์สามารถเพิ่มบอทได้สูงสุด 4 ตัว';
+      }
+
+      if (latestLobbyData) {
+        renderLobbyPlayers(latestLobbyData, latestIsHost);
       }
     }
 
@@ -270,8 +385,79 @@
       loadLanguage(lang);
     }
 
+    function updateBotControls(data, isHost) {
+      if (!botControlsEl) return;
+      botControlsEl.classList.toggle('hidden', !isHost);
+      if (!isHost) return;
+
+      if (botStatusEl) {
+        const statusText = lang === 'en'
+          ? `Bots ${data.botCount}/${data.botLimit}`
+          : `บอท ${data.botCount}/${data.botLimit}`;
+        botStatusEl.textContent = statusText;
+      }
+
+      if (addBotBtn) {
+        addBotBtn.disabled = data.botCount >= data.botLimit || data.players.length >= data.maxPlayers;
+      }
+    }
+
+    function renderLobbyPlayers(data, isHost) {
+      if (!data || !listEl) return;
+      const readyText = lang === 'en' ? 'Ready' : 'พร้อมแล้ว';
+      const hostLabel = lang === 'en' ? 'Host' : 'โฮสต์';
+      const botLabel = lang === 'en' ? 'Bot' : 'บอท';
+      const removeBotLabel = lang === 'en' ? 'Remove bot' : 'ลบบอท';
+      const kickPlayerLabel = lang === 'en' ? 'Kick player' : 'เตะผู้เล่น';
+
+      listEl.innerHTML = data.players.map(p => {
+        const badges = [];
+        if (p.playerId === data.hostPlayerId) badges.push(`<span class="bot-badge">${hostLabel}</span>`);
+        if (p.isBot) badges.push(`<span class="bot-badge">${botLabel}</span>`);
+        const readyBadge = p.ready ? `<span class="r">${readyText}</span>` : '';
+        const actionButtons = [];
+        if (isHost && p.isBot) {
+          actionButtons.push(`<button class="remove-bot" data-player-id="${p.playerId}" aria-label="${removeBotLabel}">✕</button>`);
+        } else if (isHost && !p.isBot && p.playerId !== data.hostPlayerId) {
+          actionButtons.push(`<button class="kick-player" data-player-id="${p.playerId}" aria-label="${kickPlayerLabel}">✕</button>`);
+        }
+
+        return `
+          <div class="player">
+            <div>${p.name}${badges.length ? ' ' + badges.join(' ') : ''}</div>
+            <div class="player-actions">${readyBadge} ${actionButtons.join(' ')}</div>
+          </div>`;
+      }).join('');
+
+      updateBotControls(data, isHost);
+
+      const canStartGame = isHost && data.players.length >= 2 && data.players.every(p => p.ready);
+      startBtn.style.display = canStartGame ? 'block' : 'none';
+    }
+
     // Load initial language
     loadLanguage(lang);
+
+    if (addBotBtn) {
+      addBotBtn.addEventListener('click', () => {
+        socket.emit('addBot', { code: room });
+      });
+    }
+
+    if (listEl) {
+      listEl.addEventListener('click', (event) => {
+        const removeBtn = event.target.closest('.remove-bot');
+        if (removeBtn) {
+          socket.emit('removeBot', { code: room, playerId: removeBtn.dataset.playerId });
+          return;
+        }
+
+        const kickBtn = event.target.closest('.kick-player');
+        if (kickBtn) {
+          socket.emit('kickPlayer', { code: room, playerId: kickBtn.dataset.playerId });
+        }
+      });
+    }
 
     if (!room) {
       const msg = lang === 'en' ? 'Room code not found!' : 'ไม่พบรหัสห้อง!';
@@ -283,26 +469,28 @@
 
     socket.emit('joinRoom', { code: room, name, playerId });
 
-    document.getElementById('readyBtn').onclick = () => {
-      const btn = document.getElementById('readyBtn');
-      btn.classList.toggle('ready');
+    readyBtn.onclick = () => {
+      readyBtn.classList.toggle('ready');
       if (lang === 'en') {
-        btn.textContent = btn.classList.contains('ready') ? 'Cancel' : 'Ready!';
+        readyBtn.textContent = readyBtn.classList.contains('ready') ? 'Cancel' : 'Ready!';
       } else {
-        btn.textContent = btn.classList.contains('ready') ? 'ยกเลิกพร้อม' : 'พร้อมแล้ว!';
+        readyBtn.textContent = readyBtn.classList.contains('ready') ? 'ยกเลิกพร้อม' : 'พร้อมแล้ว!';
       }
       socket.emit('toggleReady', { code: room });
     };
 
-    document.getElementById('startBtn').onclick = () => socket.emit('startGame', room);
+    startBtn.onclick = () => socket.emit('startGame', room);
 
     socket.on('updateLobby', data => {
-      const readyText = lang === 'en' ? 'Ready' : 'พร้อมแล้ว';
-      document.getElementById('list').innerHTML = data.players.map(p => 
-        `<div class="player">${p.name} ${p.ready ? `<span class="r">${readyText}</span>` : ''}</div>`
-      ).join('');
-      document.getElementById('startBtn').style.display = 
-        data.players.length >= 2 && data.players.every(p => p.ready) ? 'block' : 'none';
+      latestLobbyData = data;
+      latestIsHost = data.hostPlayerId === playerId;
+      renderLobbyPlayers(data, latestIsHost);
+    });
+
+    socket.on('kicked', ({ message }) => {
+      const defaultMsg = lang === 'en' ? 'You were removed by the host.' : 'คุณถูกโฮสต์เตะออกจากห้อง';
+      alert(message || defaultMsg);
+      location.href = '/';
     });
 
     // เมื่อเกมเริ่ม
