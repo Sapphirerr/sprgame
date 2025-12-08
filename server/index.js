@@ -32,10 +32,14 @@ const {
 const SkillManager = require('./skillManager');
 const RoomManager = require('./roomManager');
 const GameStateManager = require('./gameManager');
+const BotManager = require('./botManager');
 
 // Initialize managers AFTER loading EVENTS
 const roomManager = new RoomManager(EVENTS);
 const rooms = roomManager.rooms;
+const botManager = new BotManager(io);
+
+const getPlayerKey = (player) => player?.playerId || player?.id;
 
 // ==================== EXPRESS ROUTES ====================
 console.log('[DEBUG] Setting up express static files...');
@@ -96,6 +100,134 @@ app.get('/debug/test-image/:id', (req, res) => {
 io.on('connection', (socket) => {
   console.log('[Connection] Player joined:', socket.id);
 
+  const processAfterPlayDecisions = (roomCode) => {
+    const room = rooms.get(roomCode);
+    if (!room) return;
+
+    const allDecided = room.players.every(p => p.hasDecided === true);
+    if (!allDecided) return;
+
+    const playersWhoSkipped = room.players.filter(p => p.hasDecided && p.playedCard === null);
+    const alivePlayers = room.players.filter(p => p.heart > 0 && p.hand.length > 0);
+
+    if (alivePlayers.length <= 1) {
+      console.log(`🎉 เหลือผู้เล่นที่เล่นได้ ${alivePlayers.length} คน - เกมจบ!`);
+      setTimeout(() => {
+        io.to(roomCode).emit('turnResult', {
+          actionResults: [],
+          winnerName: alivePlayers[0]?.name || 'ไม่มีผู้ชนะ',
+          winnerScore: 0,
+          gameOver: true,
+          winnerNameFinal: alivePlayers[0]?.name || 'ไม่มีผู้ชนะ',
+          players: getPlayersInfo(room),
+          skillEffects: [],
+          revealedCards: {}
+        });
+      }, 1000);
+      return;
+    }
+
+    const playersWhoPlayed = alivePlayers.filter(p => p.hasDecided && p.playedCard !== null);
+    const allAliveDecided = playersWhoPlayed.length === alivePlayers.length;
+    if (!allAliveDecided) {
+      console.log(`⏳ รอผู้เล่นที่เหลือ: ${playersWhoPlayed.length}/${alivePlayers.length}`);
+      return;
+    }
+
+    console.log(`✅ ทุกคนที่เล่นได้ลงการ์ดครบแล้ว (${playersWhoPlayed.length} คน)`);
+
+    if (playersWhoPlayed.length === 1 && playersWhoSkipped.length > 0) {
+      playersWhoSkipped.forEach(p => {
+        if (p.heart > 0 && p.hand.length > 0) {
+          p.heart = Math.max(0, p.heart - 1);
+          console.log(`❌ ${p.name} ข้ามเทิร์น เสียพลังใจ 1 (เหลือ ${p.heart})`);
+        }
+      });
+    }
+
+    const playedCardsData = {};
+    room.players.forEach(p => {
+      if (p.playedCard) {
+        playedCardsData[p.name] = p.playedCard;
+      }
+    });
+
+    io.to(roomCode).emit('allPlayedCards', {
+      playedCards: playedCardsData,
+      event: room.event
+    });
+
+    setTimeout(() => {
+      room.phase = 'action';
+      io.to(roomCode).emit('actionPhaseStart', {
+        competition: room.competition,
+        event: room.event?.name,
+        players: getPlayersInfo(room)
+      });
+      botManager.handleActionPhase(room);
+    }, 2000);
+  };
+
+  const processAfterActionSelections = (roomCode) => {
+    const room = rooms.get(roomCode);
+    if (!room) return;
+
+    const playersWithCards = room.players.filter(p => p.playedCard !== null);
+    const allChoseAction = playersWithCards.every(p => !!p.action);
+    console.log(`[chooseAction] Players with cards: ${playersWithCards.length}, All chose action: ${allChoseAction}`);
+
+    if (allChoseAction) {
+      console.log(`[chooseAction] All players chose action, resolving turn...`);
+      resolveTurn(roomCode);
+    }
+  };
+
+  const botPlayCard = (room, player, card, skipTurn = false) => {
+    if (!room || room.phase !== 'playCard' || !player) return;
+
+    if (player.heart === 0 || player.hand.length === 0) {
+      player.playedCard = null;
+      player.hasDecided = true;
+      processAfterPlayDecisions(room.code);
+      return;
+    }
+
+    if (skipTurn || !card) {
+      player.playedCard = null;
+      player.hasDecided = true;
+      console.log(`🤖 [BOT] ${player.name} skips this turn`);
+      processAfterPlayDecisions(room.code);
+      return;
+    }
+
+    const ownedCard = player.hand.find(c => c.id === card.id) || player.hand[0];
+    if (!ownedCard) {
+      player.playedCard = null;
+      player.hasDecided = true;
+      console.log(`🤖 [BOT] ${player.name} attempted invalid card, skipping`);
+      processAfterPlayDecisions(room.code);
+      return;
+    }
+
+    player.playedCard = ownedCard;
+    player.hand = player.hand.filter(c => c.id !== ownedCard.id);
+    player.hasDecided = true;
+    console.log(`🤖 [BOT] ${player.name} played card ${ownedCard.id}`);
+    processAfterPlayDecisions(room.code);
+  };
+
+  const botChooseAction = (room, player, action = '3') => {
+    if (!room || !player || !player.playedCard) return;
+    if (room.phase !== 'playCard' && room.phase !== 'action') return;
+
+    player.action = action;
+    console.log(`🤖 [BOT] ${player.name} chooses action ${action}`);
+    processAfterActionSelections(room.code);
+  };
+
+  botManager.hooks.playCard = botPlayCard;
+  botManager.hooks.chooseAction = botChooseAction;
+
   // ==================== LOBBY ====================
   socket.on('createRoom', ({ name }) => {
     // ✅ Validate name length
@@ -113,6 +245,7 @@ io.on('connection', (socket) => {
     const player = room.players[0];
     
     player.id = socket.id;
+    roomManager.setHostSocket(code, socket.id);
     socket.join(code);
     socket.emit('roomCreated', { code, playerId, name: name.trim() });
     console.log(`[Room Created] Code: ${code}, Host: ${name.trim()}, playerId: ${playerId}`);
@@ -142,6 +275,9 @@ io.on('connection', (socket) => {
     if (isRejoin) {
       player.id = socket.id;
       socket.join(code);
+      if (player.playerId === room.hostPlayerId) {
+        roomManager.setHostSocket(code, socket.id);
+      }
       
       if (room.started) {
         socket.emit('gameStarted', { turn: room.turn, players: getPlayersInfo(room) });
@@ -185,6 +321,9 @@ io.on('connection', (socket) => {
 
     // update player's socket id and join socket.io room
     player.id = socket.id;
+    if (player.playerId === room.hostPlayerId) {
+      roomManager.setHostSocket(code, socket.id);
+    }
     socket.join(code);
     console.log(`[rejoinRoom] ${player.name} rejoined room ${code} with socket ${socket.id}`);
 
@@ -224,8 +363,94 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('addBot', ({ code }) => {
+    const room = roomManager.getRoom(code);
+    if (!room) {
+      socket.emit('error', 'ไม่พบห้องนี้');
+      return;
+    }
+
+    if (!roomManager.isHost(code, socket.id)) {
+      socket.emit('error', 'เฉพาะโฮสต์เท่านั้นที่สามารถเพิ่มบอทได้');
+      return;
+    }
+
+    const result = roomManager.addBot(code);
+    if (result.error) {
+      socket.emit('error', result.error);
+      return;
+    }
+
+    broadcastLobbyUpdate(code);
+  });
+
+  socket.on('removeBot', ({ code, playerId }) => {
+    const room = roomManager.getRoom(code);
+    if (!room) {
+      socket.emit('error', 'ไม่พบห้องนี้');
+      return;
+    }
+
+    if (!roomManager.isHost(code, socket.id)) {
+      socket.emit('error', 'เฉพาะโฮสต์เท่านั้นที่สามารถลบบอทได้');
+      return;
+    }
+
+    const result = roomManager.removeBot(code, playerId);
+    if (result.error) {
+      socket.emit('error', result.error);
+      return;
+    }
+
+    broadcastLobbyUpdate(code);
+  });
+
+  socket.on('kickPlayer', ({ code, playerId }) => {
+    const room = roomManager.getRoom(code);
+    if (!room) {
+      socket.emit('error', 'ไม่พบห้องนี้');
+      return;
+    }
+
+    if (!roomManager.isHost(code, socket.id)) {
+      socket.emit('error', 'เฉพาะโฮสต์เท่านั้นที่สามารถเตะผู้เล่นได้');
+      return;
+    }
+
+    const result = roomManager.kickPlayer(code, playerId);
+    if (result.error) {
+      socket.emit('error', result.error);
+      return;
+    }
+
+    const { removedPlayer } = result;
+    if (removedPlayer?.id) {
+      const targetSocket = io.sockets.sockets.get(removedPlayer.id);
+      if (targetSocket) {
+        targetSocket.leave(code);
+        targetSocket.emit('kicked', {
+          roomCode: code,
+          message: 'คุณถูกโฮสต์เตะออกจากห้อง'
+        });
+      }
+    }
+
+    broadcastLobbyUpdate(code);
+  });
+
   // ==================== START GAME EVENT ====================
   socket.on('startGame', (roomCode) => {
+    const room = roomManager.getRoom(roomCode);
+    if (!room) {
+      socket.emit('error', 'ไม่พบห้องนี้');
+      return;
+    }
+
+    if (!roomManager.isHost(roomCode, socket.id)) {
+      socket.emit('error', 'เฉพาะโฮสต์เท่านั้นที่เริ่มเกมได้');
+      return;
+    }
+
     console.log('[startGame event] Client requested start for room:', roomCode);
     startGame(roomCode);
   });
@@ -245,6 +470,10 @@ io.on('connection', (socket) => {
     
     // ส่ง initialHandDraw ให้แต่ละผู้เล่น
     room.players.forEach(p => {
+      if (p.isBot) {
+        console.log(`🤖 [BOT] ${p.name} พร้อมด้วยการ์ดเริ่มต้น ${p.hand.length} ใบ`);
+        return;
+      }
       const playerSocket = io.sockets.sockets.get(p.id);
       if (playerSocket) {
         console.log(`📤 Sending initialHandDraw to ${p.name} with ${p.hand.length} cards`);
@@ -375,11 +604,13 @@ io.on('connection', (socket) => {
           const newCards = room.deck.drawCards(3);
           p.hand.push(...newCards);
           
-          io.to(p.id).emit('drawCards', {
-            cards: newCards,
-            count: 3,
-            reason: 'mikudayo'
-          });
+          if (!p.isBot) {
+            io.to(p.id).emit('drawCards', {
+              cards: newCards,
+              count: 3,
+              reason: 'mikudayo'
+            });
+          }
           
           console.log(`🎁 ${p.name}: จั่ว 3 ใบจาก Mikudayo`);
         }
@@ -415,6 +646,7 @@ io.on('connection', (socket) => {
         if (revival.revived) {
           p.isDead = false;
           console.log(`🌟 [Divine Revival] ${p.name} returns with ${revival.drewCards} new cards`);
+          if (p.isBot) return;
           const playerSocket = io.sockets.sockets.get(p.id);
           if (playerSocket) {
             playerSocket.emit('divineCardRevive', {
@@ -558,18 +790,20 @@ io.on('connection', (socket) => {
     
     // ส่งข้อมูลเทิร์นให้ทุกคน (ส่งไปยัง socket id ปัจจุบันของแต่ละผู้เล่น)
     room.players.forEach(p => {
+      if (p.isBot) {
+        return;
+      }
       io.to(p.id).emit('newTurn', {
         turn: room.turn,
-        // ❌ ไม่ส่ง event/competition ที่นี่ เพราะ client จะได้จาก eventSlotResult/competitionSlotResult แล้ว
-        // event: room.event.name,
-        // competition: room.competition,
         hand: p.hand,
         players: getPlayersInfo(room),
         actionCooldown: p.actionCooldown,
-        lastTurnActionResults: room.lastTurnActionResults || [],  // ✅ ส่ง per-turn scores
-        isMikudayo: room.event.effect === 'draw_3'  // ✅ ส่ง flag สำหรับ Mikudayo
+        lastTurnActionResults: room.lastTurnActionResults || [],
+        isMikudayo: room.event.effect === 'draw_3'
       });
     });
+
+    botManager.handleNewTurn(room);
   };
 
   // optional: client can explicitly request updated turn (if needed)
@@ -654,77 +888,7 @@ io.on('connection', (socket) => {
       player.hasDecided = true;
     }
 
-    // ตรวจว่าทุกคนตัดสินใจแล้วไหม (ลง หรือ ข้าม)
-    const allDecided = room.players.every(p => p.hasDecided === true);
-    
-    if (allDecided) {
-      const playersWhoSkipped = room.players.filter(p => p.hasDecided && p.playedCard === null);
-      
-      // ✅ ตรวจสอบว่ามีผู้เล่นที่ยังเล่นได้ (มีการ์ด และ มีหัวใจ)
-      const alivePlayers = room.players.filter(p => p.heart > 0 && p.hand.length > 0);
-      
-      // ✅ ถ้าเหลือคนเล่นได้ <= 1 คน ให้จบเกม
-      if (alivePlayers.length <= 1) {
-        console.log(`🎉 เหลือผู้เล่นที่เล่นได้ ${alivePlayers.length} คน - เกมจบ!`);
-        setTimeout(() => {
-          io.to(roomCode).emit('turnResult', {
-            actionResults: [],
-            winnerName: alivePlayers[0]?.name || 'ไม่มีผู้ชนะ',
-            winnerScore: 0,
-            gameOver: true,
-            winnerNameFinal: alivePlayers[0]?.name || 'ไม่มีผู้ชนะ',
-            players: getPlayersInfo(room),
-            skillEffects: [],
-            revealedCards: {}
-          });
-          // ❌ ไม่เรียก resetRoom - ให้ startGame รีเซ็ตเองตอนกด Start ใหม่
-        }, 1000);
-        return;
-      }
-      
-      // ✅ เช็คว่าทุกคนที่ยังเล่นได้ลงการ์ดครบหรือยัง (ไม่นับคนแพ้)
-      const playersWhoPlayed = alivePlayers.filter(p => p.hasDecided && p.playedCard !== null);
-      const allAliveDecided = playersWhoPlayed.length === alivePlayers.length;
-      
-      if (!allAliveDecided) {
-        console.log(`⏳ รอผู้เล่นที่เหลือ: ${playersWhoPlayed.length}/${alivePlayers.length}`);
-        return;
-      }
-      
-      console.log(`✅ ทุกคนที่เล่นได้ลงการ์ดครบแล้ว (${playersWhoPlayed.length} คน)`);
-      
-      // ถ้ามีคนเล่นแค่คนเดียว ให้คนที่ข้ามเสียพลังใจ 1
-      if (playersWhoPlayed.length === 1 && playersWhoSkipped.length > 0) {
-        playersWhoSkipped.forEach(p => {
-          if (p.heart > 0 && p.hand.length > 0) { // เฉพาะคนที่ยังเล่นได้
-            p.heart = Math.max(0, p.heart - 1);
-            console.log(`❌ ${p.name} ข้ามเทิร์น เสียพลังใจ 1 (เหลือ ${p.heart})`);
-          }
-        });
-      }
-      
-      // ส่งข้อมูลให้ทุกคน
-      const playedCardsData = {};
-      room.players.forEach(p => {
-        if (p.playedCard) {
-          playedCardsData[p.name] = p.playedCard;
-        }
-      });
-      
-      io.to(roomCode).emit('allPlayedCards', {
-        playedCards: playedCardsData,
-        event: room.event // ✅ ส่ง event data เพื่อให้ client ตรวจสอบอีเวนต์โหนเซไก
-      });
-      
-      setTimeout(() => {
-        room.phase = 'action';
-        io.to(roomCode).emit('actionPhaseStart', {
-          competition: room.competition,
-          event: room.event.name,
-          players: getPlayersInfo(room)
-        });
-      }, 2000);
-    }
+    processAfterPlayDecisions(roomCode);
   });
 
   // ==================== เลือก Action ====================
@@ -785,16 +949,7 @@ io.on('connection', (socket) => {
     player.action = action;
     console.log(`✅ ${player.name} เลือก action ${action}`);
 
-    // ตรวจว่าทุกคนที่ลงการ์ดเลือก action แล้วไหม
-    const playersWithCards = room.players.filter(p => p.playedCard !== null);
-    const allChoseAction = playersWithCards.every(p => p.action);
-    
-    console.log(`[chooseAction] Players with cards: ${playersWithCards.length}, All chose action: ${allChoseAction}`);
-    
-    if (allChoseAction) {
-      console.log(`[chooseAction] All players chose action, resolving turn...`);
-      resolveTurn(roomCode);
-    }
+    processAfterActionSelections(roomCode);
   });
 
   // Auto resolve เมื่อครบ 30 วิ
@@ -822,6 +977,7 @@ io.on('connection', (socket) => {
 
   const resetRoom = (code) => {
     roomManager.resetRoom(code);
+    botManager.handleRoomReset(code);
   };
 
   // ==================== จบเทิร์น + คำนวณผล ====================
@@ -830,6 +986,7 @@ io.on('connection', (socket) => {
     if (!room) return;
     
     room.phase = 'resolve';
+    botManager.notifyTurnResolution(room);
 
     const playersWithCards = room.players.filter(p => p.playedCard !== null);
     console.log(`[RESOLVE START] playersWithCards: ${playersWithCards.length}/${room.players.length}`);
@@ -867,7 +1024,8 @@ io.on('connection', (socket) => {
     playersWithCards.forEach(p => {
       if (p.action === "2" && p.playedCard) {
         // Check if skill is blocked by hidden_skill
-        if (SkillManager.isSkillBlocked(room, p.id)) {
+        const playerKey = getPlayerKey(p);
+        if (SkillManager.isSkillBlocked(room, playerKey)) {
           console.log(`🚫 ${p.name} skill blocked by hidden_skill!`);
           skillEffects.push({
             player: p.name,
@@ -918,12 +1076,13 @@ io.on('connection', (socket) => {
     });
 
     playersWithCards.forEach(p => {
+      const playerKey = getPlayerKey(p);
       const card = p.playedCard;
       const scoringCard = { ...card };
       
       // ✅ Apply skill stat modifiers to a scoring clone so deck data stays pristine
-      if (statModifiers[p.id]) {
-        const mods = statModifiers[p.id];
+      if (statModifiers[playerKey]) {
+        const mods = statModifiers[playerKey];
         if (mods.vocal) scoringCard.vocal = Math.max(1, scoringCard.vocal + mods.vocal);
         if (mods.dance) scoringCard.dance = Math.max(1, scoringCard.dance + mods.dance);
         if (mods.visual) scoringCard.visual = Math.max(1, scoringCard.visual + mods.visual);
@@ -977,7 +1136,7 @@ io.on('connection', (socket) => {
       
       console.log(`  ✅ Final Score: ${actualScore}\n`);
 
-      scores[p.id] = actualScore;
+      scores[playerKey] = actualScore;
       if (actualScore > maxScore) {
         maxScore = actualScore;
         winner = p;
@@ -1015,7 +1174,7 @@ io.on('connection', (socket) => {
 
     // ==================== PHASE 3: Apply Heart Loss / Shield Effects ====================
     // ✅ หาว่ามีกี่คนที่ได้คะแนนสูงสุด
-    const winnersWithMaxScore = playersWithCards.filter(p => scores[p.id] === maxScore);
+    const winnersWithMaxScore = playersWithCards.filter(p => scores[getPlayerKey(p)] === maxScore);
     
     console.log(`[TURN RESULT] maxScore=${maxScore}, winners=${winnersWithMaxScore.length}, totalPlayers=${playersWithCards.length}`);
     
@@ -1025,12 +1184,13 @@ io.on('connection', (socket) => {
     } else {
       // ถ้าบางคนแต้มต่างกว่า → เฉพาะคนที่ไม่ได้ maxScore เสีย
       playersWithCards.forEach(p => {
-        if (scores[p.id] < maxScore) {
+        const playerKey = getPlayerKey(p);
+        if (scores[playerKey] < maxScore) {
           // Check if protected by leek_shield
-          if (!room.protectedPlayers[p.id]) {
+          if (!room.protectedPlayers[playerKey]) {
             if (p.action !== "4") {
               p.heart = Math.max(0, p.heart - 1);
-              console.log(`🔻 ${p.name} แพ้เทิร์น (${scores[p.id]} < ${maxScore}) เสียพลังใจ 1 (เหลือ ${p.heart})`);
+              console.log(`🔻 ${p.name} แพ้เทิร์น (${scores[playerKey]} < ${maxScore}) เสียพลังใจ 1 (เหลือ ${p.heart})`);
             }
           } else {
             console.log(`🛡️ ${p.name} protected by Leek Shield!`);
@@ -1133,7 +1293,7 @@ io.on('connection', (socket) => {
     SkillManager.clearTemporaryEffects(room);
 
     // ✅ ตรวจสอบสถานะเกม: ผู้ชนะ, ผู้แพ้, การเสมอ (AFTER divine card check)
-    const hasPendingDivine = (p) => room.divineCardActive && room.divineCardActive[p.id];
+    const hasPendingDivine = (p) => room.divineCardActive && room.divineCardActive[getPlayerKey(p)];
     const isPlayerAlive = (p) => {
       const pendingDivine = hasPendingDivine(p);
       const heartOkay = p.heart > 0 || pendingDivine;
@@ -1286,9 +1446,13 @@ io.on('connection', (socket) => {
               const newCards = room.deck.drawCards(count);
               player.hand.push(...newCards);
               
+              if (player.isBot) {
+                console.log(`🤖 [BOT] ${player.name}: จั่ว ${count} ใบ (${reason})`);
+                return;
+              }
+
               const playerSocket = io.sockets.sockets.get(player.id);
               if (playerSocket) {
-                // ✅ ส่ง event ตามประเภทการจั่ว
                 if (reason === 'gachaGod') {
                   playerSocket.emit('gachaGodDraw', { cards: newCards });
                   console.log(`🎰 ${player.name} drew ${count} cards from Gacha God`);
@@ -1319,6 +1483,16 @@ io.on('connection', (socket) => {
               } else {
                 console.log(`🎉 ${finalWinner.name} เป็นผู้ชนะเกม!`);
               }
+              room.started = false;
+              room.phase = 'lobby';
+              room.players.forEach(p => {
+                p.ready = p.isBot ? true : false;
+                p.playedCard = null;
+                p.action = null;
+                p.hasDecided = false;
+                p.hasChosenAction = false;
+              });
+              broadcastLobbyUpdate(code);
               // ❌ ไม่เรียก resetRoom - ให้ startGame รีเซ็ตเองตอนกด Start ใหม่
             }
           }, drawDelay);
@@ -1360,6 +1534,9 @@ io.on('connection', (socket) => {
     
     if (!room) {
       console.log(`[disconnect] Room is empty, deleted`);
+      if (code) {
+        botManager.handleRoomReset(code);
+      }
       return;
     }
 
@@ -1394,6 +1571,7 @@ io.on('connection', (socket) => {
           });
           setTimeout(() => {
             roomManager.resetRoom(code);
+            botManager.handleRoomReset(code);
           }, 3000);
         }, 500);
       }
@@ -1418,6 +1596,7 @@ io.on('connection', (socket) => {
           });
           setTimeout(() => {
             roomManager.resetRoom(code);
+            botManager.handleRoomReset(code);
           }, 3000);
         }, 500);
       }
@@ -1437,8 +1616,14 @@ function broadcastLobbyUpdate(code) {
     players: room.players.map(p => ({ 
       id: p.id, 
       name: p.name, 
-      ready: p.ready 
-    }))
+      ready: p.ready,
+      playerId: p.playerId,
+      isBot: !!p.isBot
+    })),
+    hostPlayerId: room.hostPlayerId,
+    maxPlayers: 5,
+    botLimit: 4,
+    botCount: room.players.filter(p => p.isBot).length
   });
 }
 
