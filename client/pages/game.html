@@ -87,6 +87,15 @@
       max-width: 600px;
       width: 90%;
       border: 3px solid #00d2ff;
+      max-height: 90vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .lobby-box::-webkit-scrollbar {
+      display: none;
     }
 
     .lobby-box h1 {
@@ -3056,6 +3065,11 @@
         confirmCardBtn.textContent = currentLang === 'en' ? '✓ Confirm Card' : currentLang === 'ja' ? '✓ カードを確認' : '✓ ยืนยันการ์ด';
       }
 
+      // === TRANSLATE ADD BOT BUTTON ===
+      if (addBotBtn) {
+        addBotBtn.textContent = currentLang === 'en' ? '+ Add Bot' : currentLang === 'ja' ? '+ ボットを追加' : '+ เพิ่มบอท';
+      }
+
       // === TRANSLATE TURN LABEL ===
       const turnLabel = document.querySelector('.turn-label');
       if (turnLabel) {
@@ -3210,6 +3224,11 @@
       
       // Repopulate events grid with new language
       populateEventsModal();
+
+      // Update lobby UI if it's currently active to reflect language changes
+      if (gameState.lobbyMeta && document.getElementById('lobbyContainer') && !document.getElementById('lobbyContainer').classList.contains('hidden')) {
+        updateLobbyUI(gameState.lobbyMeta);
+      }
     }
 
     function changeLanguage(lang) {
