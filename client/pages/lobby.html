@@ -94,6 +94,15 @@
       box-shadow: 0 25px 80px rgba(3, 26, 68, 0.7);
       position: relative;
       z-index: 1;
+      max-height: 90vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .box::-webkit-scrollbar {
+      display: none;
     }
 
     .box::before {
@@ -364,14 +373,28 @@
         document.getElementById('lobbyInfo').textContent = 'Share this code with your friends!';
         document.getElementById('readyBtn').textContent = document.getElementById('readyBtn').classList.contains('ready') ? 'Cancel' : 'Ready!';
         document.getElementById('startBtn').textContent = 'Start Game!';
-        document.getElementById('langBtn').textContent = 'ไทย';
+        document.getElementById('langBtn').textContent = '日本語';
         if (addBotBtn) addBotBtn.textContent = '+ Add Bot';
         if (botHintEl) botHintEl.textContent = 'Host can add up to 4 bots';
         console.log('[lobby-i18n] ✅ Lobby text updated to English');
+      } else if (lang === 'ja') {
+        document.getElementById('lobbyTitle').textContent = 'プレイヤー待機ルーム';
+        document.getElementById('lobbyInfo').textContent = 'このコードをお友達と共有してください！';
+        document.getElementById('readyBtn').textContent = document.getElementById('readyBtn').classList.contains('ready') ? 'キャンセル' : '準備完了！';
+        document.getElementById('startBtn').textContent = 'ゲーム開始！';
+        document.getElementById('langBtn').textContent = 'ไทย';
+        if (addBotBtn) addBotBtn.textContent = '+ ボットを追加';
+        if (botHintEl) botHintEl.textContent = 'ホストは最大4体のボットを追加できます';
+        console.log('[lobby-i18n] ✅ Lobby text updated to Japanese');
       } else {
+        document.getElementById('lobbyTitle').textContent = 'ห้องรอผู้เล่น';
+        document.getElementById('lobbyInfo').textContent = 'แชร์โค้ดนี้กับเพื่อนของคุณ!';
+        document.getElementById('readyBtn').textContent = document.getElementById('readyBtn').classList.contains('ready') ? 'ยกเลิก' : 'พร้อมแล้ว!';
+        document.getElementById('startBtn').textContent = 'เริ่มเกม!';
         document.getElementById('langBtn').textContent = 'English';
         if (addBotBtn) addBotBtn.textContent = '+ เพิ่มบอท';
         if (botHintEl) botHintEl.textContent = 'โฮสต์สามารถเพิ่มบอทได้สูงสุด 4 ตัว';
+        console.log('[lobby-i18n] ✅ Lobby text updated to Thai');
       }
 
       if (latestLobbyData) {
@@ -380,7 +403,13 @@
     }
 
     function toggleLanguage() {
-      lang = lang === 'th' ? 'en' : 'th';
+      if (lang === 'th') {
+        lang = 'en';
+      } else if (lang === 'en') {
+        lang = 'ja';
+      } else {
+        lang = 'th';
+      }
       localStorage.setItem('lang', lang);
       loadLanguage(lang);
     }
@@ -391,9 +420,12 @@
       if (!isHost) return;
 
       if (botStatusEl) {
-        const statusText = lang === 'en'
-          ? `Bots ${data.botCount}/${data.botLimit}`
-          : `บอท ${data.botCount}/${data.botLimit}`;
+        let statusText = `บอท ${data.botCount}/${data.botLimit}`;
+        if (lang === 'en') {
+          statusText = `Bots ${data.botCount}/${data.botLimit}`;
+        } else if (lang === 'ja') {
+          statusText = `ボット ${data.botCount}/${data.botLimit}`;
+        }
         botStatusEl.textContent = statusText;
       }
 
@@ -404,11 +436,25 @@
 
     function renderLobbyPlayers(data, isHost) {
       if (!data || !listEl) return;
-      const readyText = lang === 'en' ? 'Ready' : 'พร้อมแล้ว';
-      const hostLabel = lang === 'en' ? 'Host' : 'โฮสต์';
-      const botLabel = lang === 'en' ? 'Bot' : 'บอท';
-      const removeBotLabel = lang === 'en' ? 'Remove bot' : 'ลบบอท';
-      const kickPlayerLabel = lang === 'en' ? 'Kick player' : 'เตะผู้เล่น';
+      let readyText = 'พร้อมแล้ว';
+      let hostLabel = 'โฮสต์';
+      let botLabel = 'บอท';
+      let removeBotLabel = 'ลบบอท';
+      let kickPlayerLabel = 'เตะผู้เล่น';
+
+      if (lang === 'en') {
+        readyText = 'Ready';
+        hostLabel = 'Host';
+        botLabel = 'Bot';
+        removeBotLabel = 'Remove bot';
+        kickPlayerLabel = 'Kick player';
+      } else if (lang === 'ja') {
+        readyText = '準備完了';
+        hostLabel = 'ホスト';
+        botLabel = 'ボット';
+        removeBotLabel = 'ボットを削除';
+        kickPlayerLabel = 'プレイヤーを退出';
+      }
 
       listEl.innerHTML = data.players.map(p => {
         const badges = [];
