@@ -47,7 +47,7 @@
 {"id":"035","character":"Miko of Dawn Haruka","variant":2,"rarity":"Limit","vocal":15,"dance":13,"visual":17,"type":"love","skill":"salt","group":"MMJ"},
 {"id":"036","character":"Haruka Bright Summer","variant":3,"rarity":"Fes","vocal":14,"dance":20,"visual":10,"type":"hope","skill":"leek shield","group":"MMJ"},
 
-{"id":"037","character":"Cat Airi","variant":1,"rarity":"Normal","vocal":12,"dance":16,"visual":19,"type":"happy","skill":"banana slip","group":"MMJ"},
+{"id":"037","character":"Cat Airi","variant":1,"rarity":"Normal","vocal":10,"dance":16,"visual":19,"type":"happy","skill":"banana slip","group":"MMJ"},
 {"id":"038","character":"Miss Airi","variant":2,"rarity":"Limit","vocal":17,"dance":15,"visual":12,"type":"love","skill":"golden microphone","group":"MMJ"},
 {"id":"039","character":"Airi Makeup","variant":3,"rarity":"Fes","vocal":5,"dance":20,"visual":17,"type":"hope","skill":"fate control","group":"MMJ"},
 
@@ -67,7 +67,7 @@
 {"id":"050","character":"Dog2 Akito","variant":2,"rarity":"Limit","vocal":12,"dance":12,"visual":20,"type":"love","skill":"never give up","group":"VBS"},
 {"id":"051","character":"Akito in the Land of Dawn","variant":3,"rarity":"Fes","vocal":19,"dance":11,"visual":14,"type":"hope","skill":"leek shield","group":"VBS"},
 
-{"id":"052","character":"Toya in a Bird Cage","variant":1,"rarity":"Normal","vocal":17,"dance":12,"visual":18,"type":"happy","skill":"gacha god","group":"VBS"},
+{"id":"052","character":"Toya in a Bird Cage","variant":1,"rarity":"Normal","vocal":15,"dance":12,"visual":18,"type":"happy","skill":"gacha god","group":"VBS"},
 {"id":"053","character":"Toya Flower","variant":2,"rarity":"Limit","vocal":17,"dance":18,"visual":10,"type":"love","skill":"golden microphone","group":"VBS"},
 {"id":"054","character":"Toya a Moment to Miss","variant":3,"rarity":"Fes","vocal":18,"dance":12,"visual":12,"type":"hope","skill":"fate control","group":"VBS"},
 
